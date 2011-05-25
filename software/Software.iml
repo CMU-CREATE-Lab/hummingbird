@@ -13,6 +13,17 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">
+      <library name="CREATE Lab Commons Audio">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/java/lib/create-lab-commons-audio/create-lab-commons-audio.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/java/lib/create-lab-commons-audio/create-lab-commons-audio-src.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
       <library name="CREATE Lab Commons Device">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/java/lib/create-lab-commons-device/create-lab-commons-device.jar!/" />
@@ -46,6 +57,28 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
+      <library name="CREATE Lab Commons XML">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/java/lib/create-lab-commons-xml/create-lab-commons-xml.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/java/lib/create-lab-commons-xml/create-lab-commons-xml-src.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="JDOM">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/java/lib/jdom/jdom.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="http://www.jdom.org/docs/apidocs" />
+        </JAVADOC>
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
       <library name="Log4j">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/java/lib/log4j/log4j-1.2.16.jar!/" />
@@ -66,6 +99,28 @@
           <root url="http://java.sun.com/products/javacomm/reference/api" />
         </JAVADOC>
         <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="TeRK Core">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/java/lib/terk-core/terk-core.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/java/lib/terk-core/terk-core-src.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="TeRK Services">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/java/lib/terk-services/terk-services.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/java/lib/terk-services/terk-services-src.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
   </component>
