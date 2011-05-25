@@ -2,6 +2,14 @@
 <project version="4">
   <component name="AntConfiguration">
     <defaultAnt bundledAnt="true" />
+    <buildFile url="file://$PROJECT_DIR$/software/java/build.xml">
+      <additionalClassPath />
+      <antReference projectDefault="true" />
+      <customJdkName value="" />
+      <maximumHeapSize value="128" />
+      <maximumStackSize value="2" />
+      <properties />
+    </buildFile>
   </component>
   <component name="ArtifactsStructureConfigurable.UI">
     <splitter-proportions>
@@ -39,6 +47,9 @@
     <option name="SKIP_IMPORT_STATEMENTS" value="false" />
   </component>
   <component name="Encoding" useUTFGuessing="true" native2AsciiForPropertiesFiles="false" />
+  <component name="EntryPointsManager">
+    <entry_points version="2.0" />
+  </component>
   <component name="FacetStructureConfigurable.UI">
     <splitter-proportions>
       <SplitterProportionsDataImpl />
@@ -180,8 +191,12 @@
         <inspection_tool class="MethodOverridesStaticMethod" enabled="true" level="WARNING" enabled_by_default="true" />
         <inspection_tool class="MismatchedArrayReadWrite" enabled="false" level="WARNING" enabled_by_default="false" />
         <inspection_tool class="MismatchedCollectionQueryUpdate" enabled="false" level="WARNING" enabled_by_default="false">
-          <option name="queries" value="copyInto,drainTo,propertyNames,save,store,write" />
-          <option name="updates" value="add,clear,drainTo,insert,load,offer,poll,push,put,remove,replace,retain,set,take" />
+          <option name="queryNames">
+            <value />
+          </option>
+          <option name="updateNames">
+            <value />
+          </option>
         </inspection_tool>
         <inspection_tool class="MissortedModifiers" enabled="true" level="WARNING" enabled_by_default="true">
           <option name="m_requireAnnotationsFirst" value="true" />
@@ -475,10 +490,47 @@
   <component name="ProjectResources">
     <default-html-doctype>http://www.w3.org/1999/xhtml</default-html-doctype>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_5" assert-keyword="true" jdk-15="true" project-jdk-name="JDK_1_6" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" assert-keyword="true" jdk-15="true" project-jdk-name="JDK_1_6" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
   <component name="SvnBranchConfigurationManager">
+    <option name="myConfigurationMap">
+      <map>
+        <entry key="$PROJECT_DIR$">
+          <value>
+            <SvnBranchConfiguration>
+              <option name="branchMap">
+                <map>
+                  <entry key="https://hummingbird-robot.googlecode.com/svn/branches">
+                    <value>
+                      <list />
+                    </value>
+                  </entry>
+                  <entry key="https://hummingbird-robot.googlecode.com/svn/tags">
+                    <value>
+                      <list />
+                    </value>
+                  </entry>
+                  <entry key="https://hummingbird-robot.googlecode.com/svn/wiki">
+                    <value>
+                      <list />
+                    </value>
+                  </entry>
+                </map>
+              </option>
+              <option name="branchUrls">
+                <list>
+                  <option value="https://hummingbird-robot.googlecode.com/svn/branches" />
+                  <option value="https://hummingbird-robot.googlecode.com/svn/tags" />
+                  <option value="https://hummingbird-robot.googlecode.com/svn/wiki" />
+                </list>
+              </option>
+              <option name="trunkUrl" value="https://hummingbird-robot.googlecode.com/svn/trunk" />
+            </SvnBranchConfiguration>
+          </value>
+        </entry>
+      </map>
+    </option>
     <option name="mySupportsUserInfoFilter" value="true" />
   </component>
   <component name="VcsDirectoryMappings">
