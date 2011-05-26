@@ -170,7 +170,7 @@
    </target>
 
    <target name="update-core-lib" depends="dist-hummingbird-core" description="copies the core library to its home in the lib directory" unless="update-lib-core-is-complete">
-      <update-terk-lib-directory component.name="hummingbird-core"/>
+      <update-lib-directory component.name="hummingbird-core"/>
 
       <property name="update-lib-core-is-complete" value="true"/>
    </target>
@@ -264,7 +264,7 @@
       </sequential>
    </macrodef>
 
-   <macrodef name="update-terk-lib-directory">
+   <macrodef name="update-lib-directory">
       <attribute name="component.name"/>
       <sequential>
 
