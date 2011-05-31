@@ -56,6 +56,7 @@ public final class VibrationMotorCommandStrategy extends CreateLabSerialDeviceNo
          }
       }
 
+   @Override
    protected byte[] getCommand()
       {
       return command.clone();

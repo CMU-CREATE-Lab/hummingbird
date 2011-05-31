@@ -55,6 +55,7 @@ public final class ServoCommandStrategy extends CreateLabSerialDeviceNoReturnVal
          }
       }
 
+   @Override
    protected byte[] getCommand()
       {
       return command.clone();

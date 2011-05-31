@@ -57,6 +57,7 @@ public final class MotorCommandStrategy extends CreateLabSerialDeviceNoReturnVal
          }
       }
 
+   @Override
    protected byte[] getCommand()
       {
       return command.clone();

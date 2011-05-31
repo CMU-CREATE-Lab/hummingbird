@@ -55,6 +55,7 @@ public final class LEDCommandStrategy extends CreateLabSerialDeviceNoReturnValue
          }
       }
 
+   @Override
    protected byte[] getCommand()
       {
       return command.clone();

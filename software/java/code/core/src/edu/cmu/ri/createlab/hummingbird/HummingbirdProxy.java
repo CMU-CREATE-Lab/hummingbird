@@ -22,12 +22,11 @@ import edu.cmu.ri.createlab.hummingbird.commands.MotorCommandStrategy;
 import edu.cmu.ri.createlab.hummingbird.commands.ServoCommandStrategy;
 import edu.cmu.ri.createlab.hummingbird.commands.VibrationMotorCommandStrategy;
 import edu.cmu.ri.createlab.hummingbird.services.HummingbirdServiceManager;
-import edu.cmu.ri.createlab.serial.CommandExecutionFailureHandler;
 import edu.cmu.ri.createlab.serial.CreateLabSerialDeviceNoReturnValueCommandStrategy;
-import edu.cmu.ri.createlab.serial.NoReturnValueCommandExecutor;
-import edu.cmu.ri.createlab.serial.ReturnValueCommandExecutor;
-import edu.cmu.ri.createlab.serial.SerialPortCommandExecutionQueue;
-import edu.cmu.ri.createlab.serial.SerialPortCommandResponse;
+import edu.cmu.ri.createlab.serial.SerialDeviceCommandExecutionQueue;
+import edu.cmu.ri.createlab.serial.SerialDeviceCommandResponse;
+import edu.cmu.ri.createlab.serial.SerialDeviceNoReturnValueCommandExecutor;
+import edu.cmu.ri.createlab.serial.SerialDeviceReturnValueCommandExecutor;
 import edu.cmu.ri.createlab.serial.config.BaudRate;
 import edu.cmu.ri.createlab.serial.config.CharacterSize;
 import edu.cmu.ri.createlab.serial.config.FlowControl;
@@ -35,6 +34,7 @@ import edu.cmu.ri.createlab.serial.config.Parity;
 import edu.cmu.ri.createlab.serial.config.SerialIOConfiguration;
 import edu.cmu.ri.createlab.serial.config.StopBits;
 import edu.cmu.ri.createlab.terk.services.ServiceManager;
+import edu.cmu.ri.createlab.util.commandexecution.CommandExecutionFailureHandler;
 import edu.cmu.ri.createlab.util.thread.DaemonThreadFactory;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -76,7 +76,7 @@ public final class HummingbirdProxy implements Hummingbird
       try
          {
          // create the serial port command queue
-         final SerialPortCommandExecutionQueue commandQueue = SerialPortCommandExecutionQueue.create(APPLICATION_NAME, config);
+         final SerialDeviceCommandExecutionQueue commandQueue = SerialDeviceCommandExecutionQueue.create(APPLICATION_NAME, config);
 
          // see whether its creation was successful
          if (commandQueue == null)
@@ -121,24 +121,25 @@ public final class HummingbirdProxy implements Hummingbird
       return null;
       }
 
-   private final SerialPortCommandExecutionQueue commandQueue;
+   private final SerialDeviceCommandExecutionQueue commandQueue;
    private final String serialPortName;
    private final HummingbirdServiceManager serviceManager;
+
    private final CreateLabSerialDeviceNoReturnValueCommandStrategy disconnectCommandStrategy = new DisconnectCommandStrategy();
    private final Map<Integer, GetAnalogInputCommandStrategy> analogInputCommandStategyMap = new HashMap<Integer, GetAnalogInputCommandStrategy>();
    private final GetStateCommandStrategy getStateCommandStrategy = new GetStateCommandStrategy();
    private final EmergencyStopCommandStrategy emergencyStopCommandStrategy = new EmergencyStopCommandStrategy();
 
-   private final NoReturnValueCommandExecutor noReturnValueCommandExecutor;
-   private final ReturnValueCommandExecutor<Integer> integerReturnValueCommandExecutor;
-   private final ReturnValueCommandExecutor<HummingbirdState> hummingbirdStateReturnValueCommandExecutor;
+   private final SerialDeviceNoReturnValueCommandExecutor noReturnValueCommandExecutor;
+   private final SerialDeviceReturnValueCommandExecutor<Integer> integerReturnValueCommandExecutor;
+   private final SerialDeviceReturnValueCommandExecutor<HummingbirdState> hummingbirdStateReturnValueCommandExecutor;
 
    private final Pinger pinger = new Pinger();
    private final ScheduledExecutorService peerPingScheduler = Executors.newSingleThreadScheduledExecutor(new DaemonThreadFactory("HummingbirdProxy.peerPingScheduler"));
    private final ScheduledFuture<?> peerPingScheduledFuture;
    private final Collection<CreateLabDevicePingFailureEventListener> createLabDevicePingFailureEventListeners = new HashSet<CreateLabDevicePingFailureEventListener>();
 
-   private HummingbirdProxy(final SerialPortCommandExecutionQueue commandQueue, final String serialPortName)
+   private HummingbirdProxy(final SerialDeviceCommandExecutionQueue commandQueue, final String serialPortName)
       {
       this.commandQueue = commandQueue;
       this.serialPortName = serialPortName;
@@ -151,9 +152,9 @@ public final class HummingbirdProxy implements Hummingbird
                pinger.forceFailure();
                }
             };
-      noReturnValueCommandExecutor = new NoReturnValueCommandExecutor(commandQueue, commandExecutionFailureHandler);
-      integerReturnValueCommandExecutor = new ReturnValueCommandExecutor<Integer>(commandQueue, commandExecutionFailureHandler);
-      hummingbirdStateReturnValueCommandExecutor = new ReturnValueCommandExecutor<HummingbirdState>(commandQueue, commandExecutionFailureHandler);
+      noReturnValueCommandExecutor = new SerialDeviceNoReturnValueCommandExecutor(commandQueue, commandExecutionFailureHandler);
+      integerReturnValueCommandExecutor = new SerialDeviceReturnValueCommandExecutor<Integer>(commandQueue, commandExecutionFailureHandler);
+      hummingbirdStateReturnValueCommandExecutor = new SerialDeviceReturnValueCommandExecutor<HummingbirdState>(commandQueue, commandExecutionFailureHandler);
 
       // initialize the analog input command strategy map
       for (int i = 0; i < HummingbirdConstants.ANALOG_INPUT_DEVICE_COUNT; i++)
@@ -391,13 +392,13 @@ public final class HummingbirdProxy implements Hummingbird
       // shut down the command queue, which closes the serial port
       try
          {
-         LOG.debug("LoggingDeviceProxy.disconnect(): shutting down the SerialPortCommandExecutionQueue...");
+         LOG.debug("LoggingDeviceProxy.disconnect(): shutting down the SerialDeviceCommandExecutionQueue...");
          commandQueue.shutdown();
-         LOG.debug("LoggingDeviceProxy.disconnect(): done shutting down the SerialPortCommandExecutionQueue");
+         LOG.debug("LoggingDeviceProxy.disconnect(): done shutting down the SerialDeviceCommandExecutionQueue");
          }
       catch (Exception e)
          {
-         LOG.error("LoggingDeviceProxy.disconnect(): Exception while trying to shut down the SerialPortCommandExecutionQueue", e);
+         LOG.error("LoggingDeviceProxy.disconnect(): Exception while trying to shut down the SerialDeviceCommandExecutionQueue", e);
          }
       }
 
@@ -408,7 +409,7 @@ public final class HummingbirdProxy implements Hummingbird
          try
             {
             // ping the device (all we do here is request an analog input and make sure it was successful)
-            final SerialPortCommandResponse response = commandQueue.execute(analogInputCommandStategyMap.get(0));
+            final SerialDeviceCommandResponse response = commandQueue.execute(analogInputCommandStategyMap.get(0));
             final boolean pingSuccessful = (response != null) && response.wasSuccessful();
 
             // if the ping failed, then we know we have a problem, so disconnect (which
