@@ -62,6 +62,7 @@ public final class FullColorLEDCommandStrategy extends CreateLabSerialDeviceNoRe
          }
       }
 
+   @Override
    protected byte[] getCommand()
       {
       return command.clone();

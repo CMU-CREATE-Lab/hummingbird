@@ -5,7 +5,7 @@ import java.util.Arrays;
 import edu.cmu.ri.createlab.hummingbird.Hummingbird;
 import edu.cmu.ri.createlab.hummingbird.HummingbirdConstants;
 import edu.cmu.ri.createlab.serial.CreateLabSerialDeviceReturnValueCommandStrategy;
-import edu.cmu.ri.createlab.serial.SerialPortCommandResponse;
+import edu.cmu.ri.createlab.serial.SerialDeviceCommandResponse;
 import edu.cmu.ri.createlab.util.ByteUtils;
 import org.apache.log4j.Logger;
 
@@ -27,18 +27,20 @@ public final class GetStateCommandStrategy extends CreateLabSerialDeviceReturnVa
       this.command = new byte[]{COMMAND_PREFIX};
       }
 
+   @Override
    protected int getSizeOfExpectedResponse()
       {
       return SIZE_IN_BYTES_OF_EXPECTED_RESPONSE;
       }
 
+   @Override
    protected byte[] getCommand()
       {
       return command.clone();
       }
 
    @Override
-   public Hummingbird.HummingbirdState convertResponse(final SerialPortCommandResponse response)
+   public Hummingbird.HummingbirdState convertResponse(final SerialDeviceCommandResponse response)
       {
       if (response != null && response.wasSuccessful())
          {
@@ -138,37 +140,44 @@ public final class GetStateCommandStrategy extends CreateLabSerialDeviceReturnVa
          return sign * speed;
          }
 
+      @Override
       public Color[] getFullColorLEDs()
          {
          return new Color[]{orbs[0].getColor(),
                             orbs[1].getColor()};
          }
 
+      @Override
       public int[] getLedIntensities()
          {
          return leds.clone();
          }
 
+      @Override
       public int[] getServoPositions()
          {
          return servos.clone();
          }
 
+      @Override
       public int[] getMotorVelocities()
          {
          return motors.clone();
          }
 
+      @Override
       public int[] getVibrationMotorSpeeds()
          {
          return vibeMotors.clone();
          }
 
+      @Override
       public int[] getAnalogInputValues()
          {
          return analogInputs.clone();
          }
 
+      @Override
       public boolean equals(final Object o)
          {
          if (this == o)
@@ -210,6 +219,7 @@ public final class GetStateCommandStrategy extends CreateLabSerialDeviceReturnVa
          return true;
          }
 
+      @Override
       public int hashCode()
          {
          int result = (orbs != null ? Arrays.hashCode(orbs) : 0);
@@ -221,6 +231,7 @@ public final class GetStateCommandStrategy extends CreateLabSerialDeviceReturnVa
          return result;
          }
 
+      @Override
       public String toString()
          {
          final StringBuilder s = new StringBuilder("HummingbirdState" + EOL);
@@ -285,6 +296,7 @@ public final class GetStateCommandStrategy extends CreateLabSerialDeviceReturnVa
             return new Color(r, g, b);
             }
 
+         @Override
          public boolean equals(final Object o)
             {
             if (this == o)
@@ -314,6 +326,7 @@ public final class GetStateCommandStrategy extends CreateLabSerialDeviceReturnVa
             return true;
             }
 
+         @Override
          public int hashCode()
             {
             int result = r;

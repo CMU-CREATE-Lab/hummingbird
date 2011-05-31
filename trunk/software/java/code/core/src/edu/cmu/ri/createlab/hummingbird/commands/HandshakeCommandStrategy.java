@@ -13,11 +13,13 @@ public final class HandshakeCommandStrategy extends CreateLabSerialDeviceHandsha
    /** The pattern of characters to send to put the hummingbird into receive mode. */
    private static final byte[] RECEIVE_MODE_CHARACTERS = {'R', 'D'};
 
+   @Override
    protected byte[] getReceiveModeCharacters()
       {
       return RECEIVE_MODE_CHARACTERS.clone();
       }
 
+   @Override
    protected byte[] getStartupModeCharacters()
       {
       return STARTUP_MODE_SONG_CHARACTERS.clone();

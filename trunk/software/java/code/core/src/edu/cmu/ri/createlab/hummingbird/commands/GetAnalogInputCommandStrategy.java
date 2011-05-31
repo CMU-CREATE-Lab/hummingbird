@@ -2,7 +2,7 @@ package edu.cmu.ri.createlab.hummingbird.commands;
 
 import edu.cmu.ri.createlab.hummingbird.HummingbirdConstants;
 import edu.cmu.ri.createlab.serial.CreateLabSerialDeviceReturnValueCommandStrategy;
-import edu.cmu.ri.createlab.serial.SerialPortCommandResponse;
+import edu.cmu.ri.createlab.serial.SerialDeviceCommandResponse;
 import edu.cmu.ri.createlab.util.ByteUtils;
 
 /**
@@ -32,18 +32,20 @@ public final class GetAnalogInputCommandStrategy extends CreateLabSerialDeviceRe
                                 (byte)analogInputPortIndex};
       }
 
+   @Override
    protected int getSizeOfExpectedResponse()
       {
       return SIZE_IN_BYTES_OF_EXPECTED_RESPONSE;
       }
 
+   @Override
    protected byte[] getCommand()
       {
       return command.clone();
       }
 
    @Override
-   public Integer convertResponse(final SerialPortCommandResponse response)
+   public Integer convertResponse(final SerialDeviceCommandResponse response)
       {
       if (response != null && response.wasSuccessful())
          {

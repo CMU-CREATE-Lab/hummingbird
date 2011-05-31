@@ -10,6 +10,7 @@ public final class DisconnectCommandStrategy extends CreateLabSerialDeviceNoRetu
    /** The command character used to disconnect from the hummingbird and put it back into startup mode. */
    private static final byte[] COMMAND = {'R'};
 
+   @Override
    protected byte[] getCommand()
       {
       return COMMAND.clone();

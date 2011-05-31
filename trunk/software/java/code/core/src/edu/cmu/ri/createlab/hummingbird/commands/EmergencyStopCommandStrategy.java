@@ -17,6 +17,7 @@ public final class EmergencyStopCommandStrategy extends CreateLabSerialDeviceNoR
       this.command = new byte[]{COMMAND_PREFIX};
       }
 
+   @Override
    protected byte[] getCommand()
       {
       return command.clone();
