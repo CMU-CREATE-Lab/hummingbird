@@ -44,18 +44,18 @@ final class HummingbirdProxy implements Hummingbird
    {
    private static final Logger LOG = Logger.getLogger(HummingbirdProxy.class);
 
-   public static final String APPLICATION_NAME = "HummingbirdProxy";
+   public static final String APPLICATION_NAME = "Hummingbird";
    private static final int DELAY_IN_SECONDS_BETWEEN_PEER_PINGS = 2;
 
    /**
-    * Tries to create a <code>HummingbirdProxy</code> by connecting to a hummingbird on the serial port specified by
+    * Tries to create a <code>Hummingbird</code> by connecting to a hummingbird on the serial port specified by
     * the given <code>serialPortName</code>.  Returns <code>null</code> if the connection could not be established.
     *
     * @param serialPortName - the name of the serial port device which should be used to establish the connection
     *
     * @throws IllegalArgumentException if the <code>serialPortName</code> is <code>null</code>
     */
-   public static HummingbirdProxy create(final String serialPortName)
+   public static Hummingbird create(final String serialPortName)
       {
       // a little error checking...
       if (serialPortName == null)
