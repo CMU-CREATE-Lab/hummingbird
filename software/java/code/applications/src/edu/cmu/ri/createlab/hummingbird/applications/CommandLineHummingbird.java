@@ -9,10 +9,11 @@ import java.util.SortedMap;
 import edu.cmu.ri.createlab.device.CreateLabDevicePingFailureEventListener;
 import edu.cmu.ri.createlab.hummingbird.Hummingbird;
 import edu.cmu.ri.createlab.hummingbird.HummingbirdConstants;
-import edu.cmu.ri.createlab.hummingbird.HummingbirdDevice;
-import edu.cmu.ri.createlab.hummingbird.HummingbirdProxy;
+import edu.cmu.ri.createlab.hummingbird.HummingbirdFactory;
 import edu.cmu.ri.createlab.hummingbird.services.HummingbirdService;
+import edu.cmu.ri.createlab.hummingbird.services.HummingbirdServiceManager;
 import edu.cmu.ri.createlab.serial.commandline.SerialDeviceCommandLineApplication;
+import edu.cmu.ri.createlab.terk.services.ServiceManager;
 import edu.cmu.ri.createlab.terk.services.analog.AnalogInputsService;
 import edu.cmu.ri.createlab.terk.services.audio.AudioService;
 import edu.cmu.ri.createlab.terk.services.led.FullColorLEDService;
@@ -27,6 +28,7 @@ import edu.cmu.ri.createlab.util.FileUtils;
  */
 public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
    {
+
    public static void main(final String[] args)
       {
       final BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
@@ -35,6 +37,18 @@ public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
       }
 
    private Hummingbird hummingbird;
+   private ServiceManager serviceManager;
+
+   private CreateLabDevicePingFailureEventListener pingFailureEventListener =
+         new CreateLabDevicePingFailureEventListener()
+         {
+         public void handlePingFailureEvent()
+            {
+            println("Device ping failure detected.  You will need to reconnect.");
+            hummingbird = null;
+            serviceManager = null;
+            }
+         };
 
    private CommandLineHummingbird(final BufferedReader in)
       {
@@ -64,7 +78,9 @@ public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
             else
                {
                println("Scanning for a hummingbird...");
-               hummingbird = new HummingbirdDevice();
+               hummingbird = HummingbirdFactory.create();
+               hummingbird.addCreateLabDevicePingFailureEventListener(pingFailureEventListener);
+               serviceManager = new HummingbirdServiceManager(hummingbird);
                println("Connection successful!");
                }
             }
@@ -97,21 +113,16 @@ public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
 
                      if (serialPortName != null)
                         {
-                        hummingbird = connectToDevice(serialPortName,
-                                                      new CreateLabDevicePingFailureEventListener()
-                                                      {
-                                                      public void handlePingFailureEvent()
-                                                         {
-                                                         println("Device ping failure detected.  You will need to reconnect.");
-                                                         hummingbird = null;
-                                                         }
-                                                      });
+                        hummingbird = HummingbirdFactory.create(serialPortName);
+
                         if (hummingbird == null)
                            {
                            println("Connection failed!");
                            }
                         else
                            {
+                           hummingbird.addCreateLabDevicePingFailureEventListener(pingFailureEventListener);
+                           serviceManager = new HummingbirdServiceManager(hummingbird);
                            println("Connection successful!");
                            }
                         }
@@ -488,18 +499,6 @@ public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
       println("--------------------------------------------");
       }
 
-   protected final Hummingbird connectToDevice(final String serialPortName, final CreateLabDevicePingFailureEventListener pingFailureEventListener)
-      {
-      final HummingbirdProxy proxy = HummingbirdProxy.create(serialPortName);
-
-      if (proxy != null)
-         {
-         proxy.addCreateLabDevicePingFailureEventListener(pingFailureEventListener);
-         }
-
-      return proxy;
-      }
-
    protected final boolean isConnected()
       {
       return hummingbird != null;
@@ -511,56 +510,57 @@ public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
          {
          hummingbird.disconnect();
          hummingbird = null;
+         serviceManager = null;
          }
       }
 
    protected Hummingbird.HummingbirdState getState()
       {
-      return ((HummingbirdService)hummingbird.getServiceManager().getServiceByTypeId(HummingbirdService.TYPE_ID)).getHummingbirdState();
+      return ((HummingbirdService)serviceManager.getServiceByTypeId(HummingbirdService.TYPE_ID)).getHummingbirdState();
       }
 
    protected int getAnalogInputValue(final int analogInputId)
       {
-      return ((AnalogInputsService)hummingbird.getServiceManager().getServiceByTypeId(AnalogInputsService.TYPE_ID)).getAnalogInputValue(analogInputId);
+      return ((AnalogInputsService)serviceManager.getServiceByTypeId(AnalogInputsService.TYPE_ID)).getAnalogInputValue(analogInputId);
       }
 
    protected void setMotorVelocity(final int motorId, final int velocity)
       {
-      ((VelocityControllableMotorService)hummingbird.getServiceManager().getServiceByTypeId(VelocityControllableMotorService.TYPE_ID)).setVelocity(motorId, velocity);
+      ((VelocityControllableMotorService)serviceManager.getServiceByTypeId(VelocityControllableMotorService.TYPE_ID)).setVelocity(motorId, velocity);
       }
 
    protected void setVibrationMotorSpeed(final int motorId, final int speed)
       {
-      ((SpeedControllableMotorService)hummingbird.getServiceManager().getServiceByTypeId(SpeedControllableMotorService.TYPE_ID)).setSpeed(motorId, speed);
+      ((SpeedControllableMotorService)serviceManager.getServiceByTypeId(SpeedControllableMotorService.TYPE_ID)).setSpeed(motorId, speed);
       }
 
    protected void setServoPosition(final int servoId, final int position)
       {
-      ((SimpleServoService)hummingbird.getServiceManager().getServiceByTypeId(SimpleServoService.TYPE_ID)).setPosition(servoId, position);
+      ((SimpleServoService)serviceManager.getServiceByTypeId(SimpleServoService.TYPE_ID)).setPosition(servoId, position);
       }
 
    protected void setLED(final int ledId, final int intensity)
       {
-      ((SimpleLEDService)hummingbird.getServiceManager().getServiceByTypeId(SimpleLEDService.TYPE_ID)).set(ledId, intensity);
+      ((SimpleLEDService)serviceManager.getServiceByTypeId(SimpleLEDService.TYPE_ID)).set(ledId, intensity);
       }
 
    protected void setFullColorLED(final int ledId, final int r, final int g, final int b)
       {
-      ((FullColorLEDService)hummingbird.getServiceManager().getServiceByTypeId(FullColorLEDService.TYPE_ID)).set(ledId, new Color(r, g, b));
+      ((FullColorLEDService)serviceManager.getServiceByTypeId(FullColorLEDService.TYPE_ID)).set(ledId, new Color(r, g, b));
       }
 
    protected void playTone(final int frequency, final int amplitude, final int duration)
       {
-      ((AudioService)hummingbird.getServiceManager().getServiceByTypeId(AudioService.TYPE_ID)).playTone(frequency, amplitude, duration);
+      ((AudioService)serviceManager.getServiceByTypeId(AudioService.TYPE_ID)).playTone(frequency, amplitude, duration);
       }
 
    protected void playClip(final byte[] data)
       {
-      ((AudioService)hummingbird.getServiceManager().getServiceByTypeId(AudioService.TYPE_ID)).playSound(data);
+      ((AudioService)serviceManager.getServiceByTypeId(AudioService.TYPE_ID)).playSound(data);
       }
 
    protected void emergencyStop()
       {
-      ((HummingbirdService)hummingbird.getServiceManager().getServiceByTypeId(HummingbirdService.TYPE_ID)).emergencyStop();
+      ((HummingbirdService)serviceManager.getServiceByTypeId(HummingbirdService.TYPE_ID)).emergencyStop();
       }
    }

@@ -2,8 +2,9 @@ package edu.cmu.ri.createlab.hummingbird.services;
 
 import java.util.HashMap;
 import java.util.Map;
-import edu.cmu.ri.createlab.hummingbird.HummingbirdProxy;
+import edu.cmu.ri.createlab.hummingbird.Hummingbird;
 import edu.cmu.ri.createlab.terk.services.Service;
+import edu.cmu.ri.createlab.terk.services.ServiceCreator;
 import edu.cmu.ri.createlab.terk.services.analog.AnalogInputsService;
 import edu.cmu.ri.createlab.terk.services.audio.AudioService;
 import edu.cmu.ri.createlab.terk.services.led.FullColorLEDService;
@@ -20,77 +21,77 @@ public final class HummingbirdServiceFactory
    {
    private static final Logger LOG = Logger.getLogger(HummingbirdServiceFactory.class);
 
-   private final Map<String, HummingbirdServiceCreator> typeIdToServiceCreatorsMap = new HashMap<String, HummingbirdServiceCreator>();
+   private final Map<String, ServiceCreator<Hummingbird>> typeIdToServiceCreatorsMap = new HashMap<String, ServiceCreator<Hummingbird>>();
 
    public HummingbirdServiceFactory()
       {
       typeIdToServiceCreatorsMap.put(AnalogInputsService.TYPE_ID,
-                                     new HummingbirdServiceCreator()
+                                     new ServiceCreator<Hummingbird>()
                                      {
-                                     public Service create(final HummingbirdProxy proxy)
+                                     public Service createService(final Hummingbird hummingbird)
                                         {
-                                        return AnalogInputsServiceImpl.create(proxy);
+                                        return AnalogInputsServiceImpl.create(hummingbird);
                                         }
                                      });
       typeIdToServiceCreatorsMap.put(AudioService.TYPE_ID,
-                                     new HummingbirdServiceCreator()
+                                     new ServiceCreator<Hummingbird>()
                                      {
-                                     public Service create(final HummingbirdProxy proxy)
+                                     public Service createService(final Hummingbird hummingbird)
                                         {
-                                        return AudioServiceImpl.create(proxy);
+                                        return AudioServiceImpl.create(hummingbird);
                                         }
                                      });
       typeIdToServiceCreatorsMap.put(FullColorLEDService.TYPE_ID,
-                                     new HummingbirdServiceCreator()
+                                     new ServiceCreator<Hummingbird>()
                                      {
-                                     public Service create(final HummingbirdProxy proxy)
+                                     public Service createService(final Hummingbird hummingbird)
                                         {
-                                        return FullColorLEDServiceImpl.create(proxy);
+                                        return FullColorLEDServiceImpl.create(hummingbird);
                                         }
                                      });
       typeIdToServiceCreatorsMap.put(HummingbirdService.TYPE_ID,
-                                     new HummingbirdServiceCreator()
+                                     new ServiceCreator<Hummingbird>()
                                      {
-                                     public Service create(final HummingbirdProxy proxy)
+                                     public Service createService(final Hummingbird hummingbird)
                                         {
-                                        return HummingbirdServiceImpl.create(proxy);
+                                        return HummingbirdServiceImpl.create(hummingbird);
                                         }
                                      });
       typeIdToServiceCreatorsMap.put(SimpleLEDService.TYPE_ID,
-                                     new HummingbirdServiceCreator()
+                                     new ServiceCreator<Hummingbird>()
                                      {
-                                     public Service create(final HummingbirdProxy proxy)
+                                     public Service createService(final Hummingbird hummingbird)
                                         {
-                                        return SimpleLEDServiceImpl.create(proxy);
+                                        return SimpleLEDServiceImpl.create(hummingbird);
                                         }
                                      });
       typeIdToServiceCreatorsMap.put(SimpleServoService.TYPE_ID,
-                                     new HummingbirdServiceCreator()
+                                     new ServiceCreator<Hummingbird>()
                                      {
-                                     public Service create(final HummingbirdProxy proxy)
+                                     public Service createService(final Hummingbird hummingbird)
                                         {
-                                        return SimpleServoServiceImpl.create(proxy);
+                                        return SimpleServoServiceImpl.create(hummingbird);
                                         }
                                      });
       typeIdToServiceCreatorsMap.put(SpeedControllableMotorService.TYPE_ID,
-                                     new HummingbirdServiceCreator()
+                                     new ServiceCreator<Hummingbird>()
                                      {
-                                     public Service create(final HummingbirdProxy proxy)
+                                     public Service createService(final Hummingbird hummingbird)
                                         {
-                                        return SpeedControllableMotorServiceImpl.create(proxy);
+                                        return SpeedControllableMotorServiceImpl.create(hummingbird);
                                         }
                                      });
       typeIdToServiceCreatorsMap.put(VelocityControllableMotorService.TYPE_ID,
-                                     new HummingbirdServiceCreator()
+                                     new ServiceCreator<Hummingbird>()
                                      {
-                                     public Service create(final HummingbirdProxy proxy)
+                                     public Service createService(final Hummingbird hummingbird)
                                         {
-                                        return VelocityControllableMotorServiceImpl.create(proxy);
+                                        return VelocityControllableMotorServiceImpl.create(hummingbird);
                                         }
                                      });
       }
 
-   public Service createService(final String serviceTypeId, final HummingbirdProxy proxy)
+   public Service createService(final String serviceTypeId, final Hummingbird hummingbird)
       {
       if (typeIdToServiceCreatorsMap.containsKey(serviceTypeId))
          {
@@ -98,7 +99,7 @@ public final class HummingbirdServiceFactory
             {
             LOG.debug("HummingbirdServiceFactory.createService(" + serviceTypeId + ")");
             }
-         return typeIdToServiceCreatorsMap.get(serviceTypeId).create(proxy);
+         return typeIdToServiceCreatorsMap.get(serviceTypeId).createService(hummingbird);
          }
       return null;
       }

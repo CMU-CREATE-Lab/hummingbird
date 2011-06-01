@@ -21,7 +21,6 @@ import edu.cmu.ri.createlab.hummingbird.commands.LEDCommandStrategy;
 import edu.cmu.ri.createlab.hummingbird.commands.MotorCommandStrategy;
 import edu.cmu.ri.createlab.hummingbird.commands.ServoCommandStrategy;
 import edu.cmu.ri.createlab.hummingbird.commands.VibrationMotorCommandStrategy;
-import edu.cmu.ri.createlab.hummingbird.services.HummingbirdServiceManager;
 import edu.cmu.ri.createlab.serial.CreateLabSerialDeviceNoReturnValueCommandStrategy;
 import edu.cmu.ri.createlab.serial.SerialDeviceCommandExecutionQueue;
 import edu.cmu.ri.createlab.serial.SerialDeviceCommandResponse;
@@ -33,7 +32,6 @@ import edu.cmu.ri.createlab.serial.config.FlowControl;
 import edu.cmu.ri.createlab.serial.config.Parity;
 import edu.cmu.ri.createlab.serial.config.SerialIOConfiguration;
 import edu.cmu.ri.createlab.serial.config.StopBits;
-import edu.cmu.ri.createlab.terk.services.ServiceManager;
 import edu.cmu.ri.createlab.util.commandexecution.CommandExecutionFailureHandler;
 import edu.cmu.ri.createlab.util.thread.DaemonThreadFactory;
 import org.apache.log4j.Level;
@@ -42,7 +40,7 @@ import org.apache.log4j.Logger;
 /**
  * @author Chris Bartley (bartley@cmu.edu)
  */
-public final class HummingbirdProxy implements Hummingbird
+final class HummingbirdProxy implements Hummingbird
    {
    private static final Logger LOG = Logger.getLogger(HummingbirdProxy.class);
 
@@ -123,7 +121,6 @@ public final class HummingbirdProxy implements Hummingbird
 
    private final SerialDeviceCommandExecutionQueue commandQueue;
    private final String serialPortName;
-   private final HummingbirdServiceManager serviceManager;
 
    private final CreateLabSerialDeviceNoReturnValueCommandStrategy disconnectCommandStrategy = new DisconnectCommandStrategy();
    private final Map<Integer, GetAnalogInputCommandStrategy> analogInputCommandStategyMap = new HashMap<Integer, GetAnalogInputCommandStrategy>();
@@ -162,8 +159,6 @@ public final class HummingbirdProxy implements Hummingbird
          analogInputCommandStategyMap.put(i, new GetAnalogInputCommandStrategy(i));
          }
 
-      serviceManager = new HummingbirdServiceManager(this);
-
       // schedule periodic peer pings
       peerPingScheduledFuture = peerPingScheduler.scheduleAtFixedRate(pinger,
                                                                       DELAY_IN_SECONDS_BETWEEN_PEER_PINGS, // delay before first ping
@@ -193,12 +188,6 @@ public final class HummingbirdProxy implements Hummingbird
          {
          createLabDevicePingFailureEventListeners.remove(listener);
          }
-      }
-
-   @Override
-   public ServiceManager getServiceManager()
-      {
-      return serviceManager;
       }
 
    @Override
@@ -353,7 +342,7 @@ public final class HummingbirdProxy implements Hummingbird
       {
       if (LOG.isDebugEnabled())
          {
-         LOG.debug("LoggingDeviceProxy.disconnect(" + willAddDisconnectCommandToQueue + ")");
+         LOG.debug("HummingbirdProxy.disconnect(" + willAddDisconnectCommandToQueue + ")");
          }
 
       // turn off the peer pinger
@@ -361,26 +350,26 @@ public final class HummingbirdProxy implements Hummingbird
          {
          peerPingScheduledFuture.cancel(false);
          peerPingScheduler.shutdownNow();
-         LOG.debug("LoggingDeviceProxy.disconnect(): Successfully shut down the Hummingbird pinger.");
+         LOG.debug("HummingbirdProxy.disconnect(): Successfully shut down the Hummingbird pinger.");
          }
       catch (Exception e)
          {
-         LOG.error("LoggingDeviceProxy.disconnect(): Exception caught while trying to shut down peer pinger", e);
+         LOG.error("HummingbirdProxy.disconnect(): Exception caught while trying to shut down peer pinger", e);
          }
 
       // optionally send goodbye command to the Hummingbird
       if (willAddDisconnectCommandToQueue)
          {
-         LOG.debug("LoggingDeviceProxy.disconnect(): Now attempting to send the disconnect command to the Hummingbird");
+         LOG.debug("HummingbirdProxy.disconnect(): Now attempting to send the disconnect command to the Hummingbird");
          try
             {
             if (commandQueue.executeAndReturnStatus(disconnectCommandStrategy))
                {
-               LOG.debug("LoggingDeviceProxy.disconnect(): Successfully disconnected from the Hummingbird.");
+               LOG.debug("HummingbirdProxy.disconnect(): Successfully disconnected from the Hummingbird.");
                }
             else
                {
-               LOG.error("LoggingDeviceProxy.disconnect(): Failed to disconnect from the Hummingbird.");
+               LOG.error("HummingbirdProxy.disconnect(): Failed to disconnect from the Hummingbird.");
                }
             }
          catch (Exception e)
@@ -392,13 +381,13 @@ public final class HummingbirdProxy implements Hummingbird
       // shut down the command queue, which closes the serial port
       try
          {
-         LOG.debug("LoggingDeviceProxy.disconnect(): shutting down the SerialDeviceCommandExecutionQueue...");
+         LOG.debug("HummingbirdProxy.disconnect(): shutting down the SerialDeviceCommandExecutionQueue...");
          commandQueue.shutdown();
-         LOG.debug("LoggingDeviceProxy.disconnect(): done shutting down the SerialDeviceCommandExecutionQueue");
+         LOG.debug("HummingbirdProxy.disconnect(): done shutting down the SerialDeviceCommandExecutionQueue");
          }
       catch (Exception e)
          {
-         LOG.error("LoggingDeviceProxy.disconnect(): Exception while trying to shut down the SerialDeviceCommandExecutionQueue", e);
+         LOG.error("HummingbirdProxy.disconnect(): Exception while trying to shut down the SerialDeviceCommandExecutionQueue", e);
          }
       }
 
@@ -421,7 +410,7 @@ public final class HummingbirdProxy implements Hummingbird
             }
          catch (Exception e)
             {
-            LOG.error("LoggingDeviceProxy$Pinger.run(): Exception caught while executing the peer pinger", e);
+            LOG.error("HummingbirdProxy$Pinger.run(): Exception caught while executing the peer pinger", e);
             }
          }
 
@@ -429,18 +418,18 @@ public final class HummingbirdProxy implements Hummingbird
          {
          try
             {
-            LOG.debug("LoggingDeviceProxy$Pinger.handlePingFailure(): Peer ping failed.  Attempting to disconnect...");
+            LOG.debug("HummingbirdProxy$Pinger.handlePingFailure(): Peer ping failed.  Attempting to disconnect...");
             disconnect(false);
-            LOG.debug("LoggingDeviceProxy$Pinger.handlePingFailure(): Done disconnecting from the Hummingbird");
+            LOG.debug("HummingbirdProxy$Pinger.handlePingFailure(): Done disconnecting from the Hummingbird");
             }
          catch (Exception e)
             {
-            LOG.error("LoggingDeviceProxy$Pinger.handlePingFailure(): Exeption caught while trying to disconnect from the Hummingbird", e);
+            LOG.error("HummingbirdProxy$Pinger.handlePingFailure(): Exeption caught while trying to disconnect from the Hummingbird", e);
             }
 
          if (LOG.isDebugEnabled())
             {
-            LOG.debug("LoggingDeviceProxy$Pinger.handlePingFailure(): Notifying " + createLabDevicePingFailureEventListeners.size() + " listeners of ping failure...");
+            LOG.debug("HummingbirdProxy$Pinger.handlePingFailure(): Notifying " + createLabDevicePingFailureEventListeners.size() + " listeners of ping failure...");
             }
          for (final CreateLabDevicePingFailureEventListener listener : createLabDevicePingFailureEventListeners)
             {
@@ -448,13 +437,13 @@ public final class HummingbirdProxy implements Hummingbird
                {
                if (LOG.isDebugEnabled())
                   {
-                  LOG.debug("   LoggingDeviceProxy$Pinger.handlePingFailure(): Notifying " + listener);
+                  LOG.debug("   HummingbirdProxy$Pinger.handlePingFailure(): Notifying " + listener);
                   }
                listener.handlePingFailureEvent();
                }
             catch (Exception e)
                {
-               LOG.error("LoggingDeviceProxy$Pinger.handlePingFailure(): Exeption caught while notifying SerialDevicePingFailureEventListener", e);
+               LOG.error("HummingbirdProxy$Pinger.handlePingFailure(): Exeption caught while notifying SerialDevicePingFailureEventListener", e);
                }
             }
          }

@@ -1,7 +1,7 @@
 package edu.cmu.ri.createlab.hummingbird.services;
 
+import edu.cmu.ri.createlab.hummingbird.Hummingbird;
 import edu.cmu.ri.createlab.hummingbird.HummingbirdConstants;
-import edu.cmu.ri.createlab.hummingbird.HummingbirdProxy;
 import edu.cmu.ri.createlab.terk.TerkConstants;
 import edu.cmu.ri.createlab.terk.properties.BasicPropertyManager;
 import edu.cmu.ri.createlab.terk.properties.PropertyManager;
@@ -13,7 +13,7 @@ import edu.cmu.ri.createlab.terk.services.motor.VelocityControllableMotorService
  */
 final class VelocityControllableMotorServiceImpl extends BaseVelocityControllableMotorServiceImpl
    {
-   static VelocityControllableMotorServiceImpl create(final HummingbirdProxy hummingbirdProxy)
+   static VelocityControllableMotorServiceImpl create(final Hummingbird hummingbird)
       {
       final BasicPropertyManager basicPropertyManager = new BasicPropertyManager();
 
@@ -21,23 +21,23 @@ final class VelocityControllableMotorServiceImpl extends BaseVelocityControllabl
       basicPropertyManager.setReadOnlyProperty(VelocityControllableMotorService.PROPERTY_NAME_MIN_VELOCITY, HummingbirdConstants.MOTOR_DEVICE_MIN_VELOCITY);
       basicPropertyManager.setReadOnlyProperty(VelocityControllableMotorService.PROPERTY_NAME_MAX_VELOCITY, HummingbirdConstants.MOTOR_DEVICE_MAX_VELOCITY);
 
-      return new VelocityControllableMotorServiceImpl(hummingbirdProxy,
+      return new VelocityControllableMotorServiceImpl(hummingbird,
                                                       basicPropertyManager,
                                                       HummingbirdConstants.MOTOR_DEVICE_COUNT);
       }
 
-   private final HummingbirdProxy hummingbirdProxy;
+   private final Hummingbird hummingbird;
 
-   private VelocityControllableMotorServiceImpl(final HummingbirdProxy hummingbirdProxy,
+   private VelocityControllableMotorServiceImpl(final Hummingbird hummingbird,
                                                 final PropertyManager propertyManager,
                                                 final int deviceCount)
       {
       super(propertyManager, deviceCount);
-      this.hummingbirdProxy = hummingbirdProxy;
+      this.hummingbird = hummingbird;
       }
 
    protected int[] execute(final boolean[] mask, final int[] velocities)
       {
-      return hummingbirdProxy.setMotorVelocities(mask, velocities);
+      return hummingbird.setMotorVelocities(mask, velocities);
       }
    }
