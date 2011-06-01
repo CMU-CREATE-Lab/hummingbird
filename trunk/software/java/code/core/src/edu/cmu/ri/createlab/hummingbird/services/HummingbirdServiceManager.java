@@ -24,20 +24,20 @@ public class HummingbirdServiceManager extends AbstractServiceManager
    {
    private static final Logger LOG = Logger.getLogger(HummingbirdServiceManager.class);
 
-   private final Hummingbird proxy;
+   private final Hummingbird hummingbird;
    private final HummingbirdServiceFactory serviceFactory = new HummingbirdServiceFactory();
    private final Map<String, Service> loadedServices = Collections.synchronizedMap(new HashMap<String, Service>());
 
-   public HummingbirdServiceManager(final Hummingbird proxy)
+   public HummingbirdServiceManager(final Hummingbird hummingbird)
       {
-      if (proxy == null)
+      if (hummingbird == null)
          {
          throw new IllegalArgumentException("HummingbirdProxy may not be null");
          }
 
-      this.proxy = proxy;
+      this.hummingbird = hummingbird;
 
-      // get the collection of supported services from the peer's proxy
+      // get the collection of supported services from the hummingbird
       final Set<String> supportedServices = new HashSet<String>();
       supportedServices.add(AnalogInputsService.TYPE_ID);
       supportedServices.add(AudioService.TYPE_ID);
@@ -76,7 +76,7 @@ public class HummingbirdServiceManager extends AbstractServiceManager
                   LOG.debug("HummingbirdServiceManager.loadService() needs to load the [" + typeId + "] service");
                   }
 
-               service = serviceFactory.createService(typeId, proxy);
+               service = serviceFactory.createService(typeId, hummingbird);
 
                // cache this service so future calls won't have to create it
                loadedServices.put(typeId, service);

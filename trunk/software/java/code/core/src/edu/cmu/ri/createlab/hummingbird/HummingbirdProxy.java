@@ -132,8 +132,8 @@ final class HummingbirdProxy implements Hummingbird
    private final SerialDeviceReturnValueCommandExecutor<HummingbirdState> hummingbirdStateReturnValueCommandExecutor;
 
    private final Pinger pinger = new Pinger();
-   private final ScheduledExecutorService peerPingScheduler = Executors.newSingleThreadScheduledExecutor(new DaemonThreadFactory("HummingbirdProxy.peerPingScheduler"));
-   private final ScheduledFuture<?> peerPingScheduledFuture;
+   private final ScheduledExecutorService pingExecutorService = Executors.newSingleThreadScheduledExecutor(new DaemonThreadFactory("HummingbirdProxy.pingExecutorService"));
+   private final ScheduledFuture<?> pingScheduledFuture;
    private final Collection<CreateLabDevicePingFailureEventListener> createLabDevicePingFailureEventListeners = new HashSet<CreateLabDevicePingFailureEventListener>();
 
    private HummingbirdProxy(final SerialDeviceCommandExecutionQueue commandQueue, final String serialPortName)
@@ -159,11 +159,11 @@ final class HummingbirdProxy implements Hummingbird
          analogInputCommandStategyMap.put(i, new GetAnalogInputCommandStrategy(i));
          }
 
-      // schedule periodic peer pings
-      peerPingScheduledFuture = peerPingScheduler.scheduleAtFixedRate(pinger,
-                                                                      DELAY_IN_SECONDS_BETWEEN_PEER_PINGS, // delay before first ping
-                                                                      DELAY_IN_SECONDS_BETWEEN_PEER_PINGS, // delay between pings
-                                                                      TimeUnit.SECONDS);
+      // schedule periodic pings
+      pingScheduledFuture = pingExecutorService.scheduleAtFixedRate(pinger,
+                                                                    DELAY_IN_SECONDS_BETWEEN_PEER_PINGS, // delay before first ping
+                                                                    DELAY_IN_SECONDS_BETWEEN_PEER_PINGS, // delay between pings
+                                                                    TimeUnit.SECONDS);
       }
 
    @Override
@@ -345,16 +345,16 @@ final class HummingbirdProxy implements Hummingbird
          LOG.debug("HummingbirdProxy.disconnect(" + willAddDisconnectCommandToQueue + ")");
          }
 
-      // turn off the peer pinger
+      // turn off the pinger
       try
          {
-         peerPingScheduledFuture.cancel(false);
-         peerPingScheduler.shutdownNow();
+         pingScheduledFuture.cancel(false);
+         pingExecutorService.shutdownNow();
          LOG.debug("HummingbirdProxy.disconnect(): Successfully shut down the Hummingbird pinger.");
          }
       catch (Exception e)
          {
-         LOG.error("HummingbirdProxy.disconnect(): Exception caught while trying to shut down peer pinger", e);
+         LOG.error("HummingbirdProxy.disconnect(): Exception caught while trying to shut down pinger", e);
          }
 
       // optionally send goodbye command to the Hummingbird
@@ -410,7 +410,7 @@ final class HummingbirdProxy implements Hummingbird
             }
          catch (Exception e)
             {
-            LOG.error("HummingbirdProxy$Pinger.run(): Exception caught while executing the peer pinger", e);
+            LOG.error("HummingbirdProxy$Pinger.run(): Exception caught while executing the pinger", e);
             }
          }
 

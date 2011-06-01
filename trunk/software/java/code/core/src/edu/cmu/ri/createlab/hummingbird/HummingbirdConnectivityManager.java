@@ -8,12 +8,12 @@ import org.apache.log4j.Logger;
 /**
  * @author Chris Bartley (bartley@cmu.edu)
  */
-final class HummingbirdConnectivityManager extends BaseCreateLabDeviceConnectivityManager<HummingbirdProxy>
+final class HummingbirdConnectivityManager extends BaseCreateLabDeviceConnectivityManager<Hummingbird>
    {
    private static final Logger LOG = Logger.getLogger(HummingbirdConnectivityManager.class);
 
    @Override
-   protected HummingbirdProxy scanForDeviceAndCreateProxy()
+   protected Hummingbird scanForDeviceAndCreateProxy()
       {
       LOG.debug("HummingbirdConnectivityManager.scanForDeviceAndCreateProxy()");
 
@@ -40,16 +40,16 @@ final class HummingbirdConnectivityManager extends BaseCreateLabDeviceConnectivi
                LOG.debug("HummingbirdConnectivityManager.scanForDeviceAndCreateProxy(): checking serial port [" + portName + "]");
                }
 
-            final HummingbirdProxy proxy = HummingbirdProxy.create(portName);
+            final Hummingbird hummingbird = HummingbirdFactory.create(portName);
 
-            if (proxy == null)
+            if (hummingbird == null)
                {
                LOG.debug("HummingbirdConnectivityManager.scanForDeviceAndCreateProxy(): connection failed, maybe it's not the device we're looking for?");
                }
             else
                {
-               LOG.debug("HummingbirdConnectivityManager.scanForDeviceAndCreateProxy(): connection established, returning proxy!");
-               return proxy;
+               LOG.debug("HummingbirdConnectivityManager.scanForDeviceAndCreateProxy(): connection established, returning hummingbird!");
+               return hummingbird;
                }
             }
          }
