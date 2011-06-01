@@ -2,7 +2,6 @@ package edu.cmu.ri.createlab.hummingbird.services;
 
 import edu.cmu.ri.createlab.hummingbird.Hummingbird;
 import edu.cmu.ri.createlab.hummingbird.HummingbirdConstants;
-import edu.cmu.ri.createlab.hummingbird.HummingbirdProxy;
 import edu.cmu.ri.createlab.terk.TerkConstants;
 import edu.cmu.ri.createlab.terk.properties.BasicPropertyManager;
 import edu.cmu.ri.createlab.terk.properties.PropertyManager;
@@ -13,7 +12,7 @@ import edu.cmu.ri.createlab.terk.services.BaseDeviceControllingService;
  */
 final class HummingbirdServiceImpl extends BaseDeviceControllingService implements HummingbirdService
    {
-   static HummingbirdServiceImpl create(final HummingbirdProxy hummingbirdProxy)
+   static HummingbirdServiceImpl create(final Hummingbird hummingbird)
       {
       final BasicPropertyManager basicPropertyManager = new BasicPropertyManager();
 
@@ -21,19 +20,19 @@ final class HummingbirdServiceImpl extends BaseDeviceControllingService implemen
       basicPropertyManager.setReadOnlyProperty(TerkConstants.PropertyKeys.HARDWARE_TYPE, HummingbirdConstants.HARDWARE_TYPE);
       basicPropertyManager.setReadOnlyProperty(TerkConstants.PropertyKeys.HARDWARE_VERSION, HummingbirdConstants.HARDWARE_VERSION);
 
-      return new HummingbirdServiceImpl(hummingbirdProxy,
+      return new HummingbirdServiceImpl(hummingbird,
                                         basicPropertyManager,
                                         HummingbirdConstants.HUMMINGBIRD_DEVICE_COUNT);
       }
 
-   private final HummingbirdProxy hummingbirdProxy;
+   private final Hummingbird hummingbird;
 
-   private HummingbirdServiceImpl(final HummingbirdProxy hummingbirdProxy,
+   private HummingbirdServiceImpl(final Hummingbird hummingbird,
                                   final PropertyManager propertyManager,
                                   final int deviceCount)
       {
       super(propertyManager, deviceCount);
-      this.hummingbirdProxy = hummingbirdProxy;
+      this.hummingbird = hummingbird;
       }
 
    @Override
@@ -44,11 +43,11 @@ final class HummingbirdServiceImpl extends BaseDeviceControllingService implemen
 
    public Hummingbird.HummingbirdState getHummingbirdState()
       {
-      return hummingbirdProxy.getState();
+      return hummingbird.getState();
       }
 
    public void emergencyStop()
       {
-      hummingbirdProxy.emergencyStop();
+      hummingbird.emergencyStop();
       }
    }

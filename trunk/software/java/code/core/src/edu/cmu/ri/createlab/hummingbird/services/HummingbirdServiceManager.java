@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import edu.cmu.ri.createlab.hummingbird.HummingbirdProxy;
+import edu.cmu.ri.createlab.hummingbird.Hummingbird;
 import edu.cmu.ri.createlab.terk.services.AbstractServiceManager;
 import edu.cmu.ri.createlab.terk.services.Service;
 import edu.cmu.ri.createlab.terk.services.analog.AnalogInputsService;
@@ -24,11 +24,11 @@ public class HummingbirdServiceManager extends AbstractServiceManager
    {
    private static final Logger LOG = Logger.getLogger(HummingbirdServiceManager.class);
 
-   private final HummingbirdProxy proxy;
+   private final Hummingbird proxy;
    private final HummingbirdServiceFactory serviceFactory = new HummingbirdServiceFactory();
    private final Map<String, Service> loadedServices = Collections.synchronizedMap(new HashMap<String, Service>());
 
-   public HummingbirdServiceManager(final HummingbirdProxy proxy)
+   public HummingbirdServiceManager(final Hummingbird proxy)
       {
       if (proxy == null)
          {

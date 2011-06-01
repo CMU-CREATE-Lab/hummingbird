@@ -2,18 +2,12 @@ package edu.cmu.ri.createlab.hummingbird;
 
 import java.awt.Color;
 import edu.cmu.ri.createlab.device.CreateLabDeviceProxy;
-import edu.cmu.ri.createlab.terk.services.ServiceManager;
 
 /**
  * @author Chris Bartley (bartley@cmu.edu)
  */
 public interface Hummingbird extends CreateLabDeviceProxy
    {
-   /**
-    * Returns the {@link ServiceManager} for this Hummingbird.
-    */
-   ServiceManager getServiceManager();
-
    /**
     * Gets the hummingbird's state.  Returns <code>null</code> if an error occurred while getting the state.
     */

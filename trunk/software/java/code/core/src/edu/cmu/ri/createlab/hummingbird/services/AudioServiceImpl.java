@@ -2,8 +2,8 @@ package edu.cmu.ri.createlab.hummingbird.services;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
+import edu.cmu.ri.createlab.hummingbird.Hummingbird;
 import edu.cmu.ri.createlab.hummingbird.HummingbirdConstants;
-import edu.cmu.ri.createlab.hummingbird.HummingbirdProxy;
 import edu.cmu.ri.createlab.terk.TerkConstants;
 import edu.cmu.ri.createlab.terk.properties.BasicPropertyManager;
 import edu.cmu.ri.createlab.terk.properties.PropertyManager;
@@ -19,7 +19,7 @@ final class AudioServiceImpl extends BaseAudioServiceImpl
    {
    private static final Logger LOG = Logger.getLogger(AudioServiceImpl.class);
 
-   static AudioServiceImpl create(final HummingbirdProxy hummingbirdProxy)
+   static AudioServiceImpl create(final Hummingbird hummingbird)
       {
       final BasicPropertyManager basicPropertyManager = new BasicPropertyManager();
 
@@ -31,28 +31,28 @@ final class AudioServiceImpl extends BaseAudioServiceImpl
       basicPropertyManager.setReadOnlyProperty(AudioService.PROPERTY_NAME_MIN_FREQUENCY, HummingbirdConstants.AUDIO_DEVICE_MIN_FREQUENCY);
       basicPropertyManager.setReadOnlyProperty(AudioService.PROPERTY_NAME_MAX_FREQUENCY, HummingbirdConstants.AUDIO_DEVICE_MAX_FREQUENCY);
 
-      return new AudioServiceImpl(hummingbirdProxy,
+      return new AudioServiceImpl(hummingbird,
                                   basicPropertyManager);
       }
 
-   private final HummingbirdProxy hummingbirdProxy;
+   private final Hummingbird hummingbird;
    private final Executor executor = Executors.newCachedThreadPool();
 
-   private AudioServiceImpl(final HummingbirdProxy hummingbirdProxy,
+   private AudioServiceImpl(final Hummingbird hummingbird,
                             final PropertyManager propertyManager)
       {
       super(propertyManager);
-      this.hummingbirdProxy = hummingbirdProxy;
+      this.hummingbird = hummingbird;
       }
 
    public void playTone(final int frequency, final int amplitude, final int duration)
       {
-      hummingbirdProxy.playTone(frequency, amplitude, duration);
+      hummingbird.playTone(frequency, amplitude, duration);
       }
 
    public void playSound(final byte[] sound)
       {
-      hummingbirdProxy.playClip(sound);
+      hummingbird.playClip(sound);
       }
 
    public void playToneAsynchronously(final int frequency, final int amplitude, final int duration, final ExceptionHandler callback)
@@ -64,7 +64,7 @@ final class AudioServiceImpl extends BaseAudioServiceImpl
                {
                public void run()
                   {
-                  hummingbirdProxy.playTone(frequency, amplitude, duration);
+                  hummingbird.playTone(frequency, amplitude, duration);
                   }
                });
          }
@@ -84,7 +84,7 @@ final class AudioServiceImpl extends BaseAudioServiceImpl
                {
                public void run()
                   {
-                  hummingbirdProxy.playClip(sound);
+                  hummingbird.playClip(sound);
                   }
                });
          }
