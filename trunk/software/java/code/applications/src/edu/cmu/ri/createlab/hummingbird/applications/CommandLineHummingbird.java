@@ -79,9 +79,16 @@ public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
                {
                println("Scanning for a hummingbird...");
                hummingbird = HummingbirdFactory.create();
-               hummingbird.addCreateLabDevicePingFailureEventListener(pingFailureEventListener);
-               serviceManager = new HummingbirdServiceManager(hummingbird);
-               println("Connection successful!");
+               if (hummingbird == null)
+                  {
+                  println("Connection failed.");
+                  }
+               else
+                  {
+                  hummingbird.addCreateLabDevicePingFailureEventListener(pingFailureEventListener);
+                  serviceManager = new HummingbirdServiceManager(hummingbird);
+                  println("Connection successful!");
+                  }
                }
             }
          };
