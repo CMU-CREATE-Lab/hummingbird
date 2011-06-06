@@ -39,7 +39,7 @@ public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
    private Hummingbird hummingbird;
    private ServiceManager serviceManager;
 
-   private CreateLabDevicePingFailureEventListener pingFailureEventListener =
+   private final CreateLabDevicePingFailureEventListener pingFailureEventListener =
          new CreateLabDevicePingFailureEventListener()
          {
          public void handlePingFailureEvent()
