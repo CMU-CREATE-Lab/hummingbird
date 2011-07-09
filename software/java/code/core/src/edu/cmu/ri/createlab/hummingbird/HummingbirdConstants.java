@@ -15,6 +15,12 @@ public class HummingbirdConstants
    /** The number of analog inputs */
    public static final int ANALOG_INPUT_DEVICE_COUNT = 2;
 
+   /** The minimum value returned by analog inputs */
+   public static final int ANALOG_INPUT_MIN_VALUE = 0;
+
+   /** The maximum value returned by analog inputs */
+   public static final int ANALOG_INPUT_MAX_VALUE = 255;
+
    /** The number of audio outputs */
    public static final int AUDIO_DEVICE_COUNT = 1;
 
