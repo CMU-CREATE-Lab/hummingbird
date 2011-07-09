@@ -5,6 +5,7 @@ import edu.cmu.ri.createlab.hummingbird.HummingbirdConstants;
 import edu.cmu.ri.createlab.terk.TerkConstants;
 import edu.cmu.ri.createlab.terk.properties.BasicPropertyManager;
 import edu.cmu.ri.createlab.terk.properties.PropertyManager;
+import edu.cmu.ri.createlab.terk.services.analog.AnalogInputsService;
 import edu.cmu.ri.createlab.terk.services.analog.BaseAnalogInputsServiceImpl;
 
 /**
@@ -18,6 +19,8 @@ final class AnalogInputsServiceImpl extends BaseAnalogInputsServiceImpl
       final int deviceCount = HummingbirdConstants.ANALOG_INPUT_DEVICE_COUNT;
 
       basicPropertyManager.setReadOnlyProperty(TerkConstants.PropertyKeys.DEVICE_COUNT, deviceCount);
+      basicPropertyManager.setReadOnlyProperty(AnalogInputsService.PROPERTY_NAME_MIN_VALUE, HummingbirdConstants.ANALOG_INPUT_MIN_VALUE);
+      basicPropertyManager.setReadOnlyProperty(AnalogInputsService.PROPERTY_NAME_MAX_VALUE, HummingbirdConstants.ANALOG_INPUT_MAX_VALUE);
 
       return new AnalogInputsServiceImpl(hummingbird,
                                          basicPropertyManager,
