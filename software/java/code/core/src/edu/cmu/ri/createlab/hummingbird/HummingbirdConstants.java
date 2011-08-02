@@ -1,5 +1,7 @@
 package edu.cmu.ri.createlab.hummingbird;
 
+import edu.cmu.ri.createlab.usb.hid.HIDDeviceDescriptor;
+
 /**
  * <p>
  * <code>HummingbirdConstants</code> defines various constants for hummingbirds
@@ -9,6 +11,8 @@ package edu.cmu.ri.createlab.hummingbird;
  */
 public class HummingbirdConstants
    {
+   public static final String DEVICE_COMMON_NAME = "Hummingbird";
+
    /** The size, in bytes, of the state array */
    public static final int SIZE_IN_BYTES_OF_STATE_ARRAY = 22;
 
@@ -92,6 +96,21 @@ public class HummingbirdConstants
 
    public static final String HARDWARE_TYPE = "hummingbird";
    public static final String HARDWARE_VERSION = "1.0";
+
+   public static final class UsbHid
+      {
+      public static final short USB_VENDOR_ID = 0x2354;
+      public static final short USB_PRODUCT_ID = 0x2222;
+
+      private static final int INPUT_REPORT_LENGTH_IN_BYTES = 9;  // count includes the report ID
+      private static final int OUTPUT_REPORT_LENGTH_IN_BYTES = 9; // count includes the report ID
+
+      public static final HIDDeviceDescriptor HUMMINGBIRD_HID_DEVICE_DESCRIPTOR = new HIDDeviceDescriptor(USB_VENDOR_ID,
+                                                                                                          USB_PRODUCT_ID,
+                                                                                                          INPUT_REPORT_LENGTH_IN_BYTES,
+                                                                                                          OUTPUT_REPORT_LENGTH_IN_BYTES,
+                                                                                                          DEVICE_COMMON_NAME);
+      }
 
    private HummingbirdConstants()
       {

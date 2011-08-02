@@ -93,7 +93,7 @@ public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
             }
          };
 
-   private final Runnable connectToDeviceAction =
+   private final Runnable connectToSerialDeviceAction =
          new Runnable()
          {
          public void run()
@@ -120,7 +120,7 @@ public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
 
                      if (serialPortName != null)
                         {
-                        hummingbird = HummingbirdFactory.create(serialPortName);
+                        hummingbird = HummingbirdFactory.createSerialHummingbird(serialPortName);
 
                         if (hummingbird == null)
                            {
@@ -138,6 +138,33 @@ public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
                         println("Invalid port");
                         }
                      }
+                  }
+               }
+            }
+         };
+
+   private final Runnable connectToHIDDeviceAction =
+         new Runnable()
+         {
+         public void run()
+            {
+            if (isConnected())
+               {
+               println("You are already connected to a Hummingbird.");
+               }
+            else
+               {
+               hummingbird = HummingbirdFactory.createHidHummingbird();
+
+               if (hummingbird == null)
+                  {
+                  println("Connection failed!");
+                  }
+               else
+                  {
+                  hummingbird.addCreateLabDevicePingFailureEventListener(pingFailureEventListener);
+                  serviceManager = new HummingbirdServiceManager(hummingbird);
+                  println("Connection successful!");
                   }
                }
             }
@@ -166,7 +193,8 @@ public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
       {
       registerAction("?", enumeratePortsAction);
       registerAction("C", scanAndConnectToDeviceAction);
-      registerAction("c", connectToDeviceAction);
+      registerAction("c", connectToSerialDeviceAction);
+      registerAction("u", connectToHIDDeviceAction);
       registerAction("d", disconnectFromDeviceAction);
 
       registerAction("g",
@@ -486,8 +514,9 @@ public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
       println("");
       println("?         List all available serial ports");
       println("");
-      println("C         Scan all serial ports and connect to the first hummingbird found");
-      println("c         Connect to the hummingbird on the given serial port");
+      println("C         Scan all USB and serial ports and connect to the first hummingbird found");
+      println("c         Connect to a serial hummingbird on the given serial port");
+      println("u         Connect to a USB HID hummingbird");
       println("d         Disconnect from the hummingbird");
       println("");
       println("g         Get the hummingbird's current state");

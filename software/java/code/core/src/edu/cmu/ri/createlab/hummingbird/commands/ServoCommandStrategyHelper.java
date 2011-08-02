@@ -3,13 +3,12 @@ package edu.cmu.ri.createlab.hummingbird.commands;
 import java.util.HashSet;
 import java.util.Set;
 import edu.cmu.ri.createlab.hummingbird.HummingbirdConstants;
-import edu.cmu.ri.createlab.serial.CreateLabSerialDeviceNoReturnValueCommandStrategy;
 import edu.cmu.ri.createlab.util.ByteUtils;
 
 /**
  * @author Chris Bartley (bartley@cmu.edu)
  */
-public final class ServoCommandStrategy extends CreateLabSerialDeviceNoReturnValueCommandStrategy
+public final class ServoCommandStrategyHelper
    {
    /** The command character used to turn on a servo motor. */
    private static final byte COMMAND_PREFIX = 'S';
@@ -18,19 +17,14 @@ public final class ServoCommandStrategy extends CreateLabSerialDeviceNoReturnVal
 
    private final byte[] command;
 
-   public ServoCommandStrategy(final int servoId, final int position)
+   public ServoCommandStrategyHelper(final int servoId, final int position, final DeviceIndexConversionStrategy indexConversionStrategy)
       {
-      if (servoId < 0 || servoId >= HummingbirdConstants.SIMPLE_SERVO_DEVICE_COUNT)
-         {
-         throw new IllegalArgumentException("Invalid servo index");
-         }
-
       this.command = new byte[]{COMMAND_PREFIX,
-                                HummingbirdCommandHelper.convertDeviceIndexToASCII(servoId),
+                                indexConversionStrategy.convertDeviceIndex((servoId)),
                                 ByteUtils.intToUnsignedByte(position)};
       }
 
-   public ServoCommandStrategy(final boolean[] mask, final int[] positions)
+   public ServoCommandStrategyHelper(final boolean[] mask, final int[] positions, final DeviceIndexConversionStrategy indexConversionStrategy)
       {
       // figure out which ids are masked on
       final Set<Integer> maskedIndeces = new HashSet<Integer>();
@@ -49,14 +43,13 @@ public final class ServoCommandStrategy extends CreateLabSerialDeviceNoReturnVal
       for (final int index : maskedIndeces)
          {
          this.command[i * BYTES_PER_COMMAND] = COMMAND_PREFIX;
-         this.command[i * BYTES_PER_COMMAND + 1] = HummingbirdCommandHelper.convertDeviceIndexToASCII(index);
+         this.command[i * BYTES_PER_COMMAND + 1] = indexConversionStrategy.convertDeviceIndex((index));
          this.command[i * BYTES_PER_COMMAND + 2] = ByteUtils.intToUnsignedByte(Math.abs(positions[index]));
          i++;
          }
       }
 
-   @Override
-   protected byte[] getCommand()
+   public byte[] getCommand()
       {
       return command.clone();
       }
