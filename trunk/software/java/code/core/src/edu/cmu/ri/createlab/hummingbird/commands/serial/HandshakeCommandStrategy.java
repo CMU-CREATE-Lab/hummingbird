@@ -1,4 +1,4 @@
-package edu.cmu.ri.createlab.hummingbird.commands;
+package edu.cmu.ri.createlab.hummingbird.commands.serial;
 
 import edu.cmu.ri.createlab.serial.CreateLabSerialDeviceHandshakeCommandStrategy;
 

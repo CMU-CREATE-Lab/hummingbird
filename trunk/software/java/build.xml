@@ -6,12 +6,16 @@
    <!-- Paths -->
    <path id="hummingbird-core-classpath">
       <!-- third-party jars -->
+      <pathelement path="${commons-lang.jar}"/>
       <pathelement path="${create-lab-commons-audio.jar}"/>
       <pathelement path="${create-lab-commons-device.jar}"/>
       <pathelement path="${create-lab-commons-serial.jar}"/>
+      <pathelement path="${create-lab-commons-usb-hid.jar}"/>
       <pathelement path="${create-lab-commons-util.jar}"/>
       <pathelement path="${create-lab-commons-xml.jar}"/>
       <pathelement path="${jdom.jar}"/>
+      <pathelement path="${jna.jar}"/>
+      <pathelement path="${jnaerator.jar}"/>
       <pathelement path="${log4j.jar}"/>
       <pathelement path="${rxtx.jar}"/>
       <pathelement path="${terk-core.jar}"/>
@@ -23,12 +27,16 @@
       <pathelement path="${hummingbird-core.build.dir}"/>
 
       <!-- third-party jars -->
+      <pathelement path="${commons-lang.jar}"/>
       <pathelement path="${create-lab-commons-audio.jar}"/>
       <pathelement path="${create-lab-commons-device.jar}"/>
       <pathelement path="${create-lab-commons-serial.jar}"/>
+      <pathelement path="${create-lab-commons-usb-hid.jar}"/>
       <pathelement path="${create-lab-commons-util.jar}"/>
       <pathelement path="${create-lab-commons-xml.jar}"/>
       <pathelement path="${jdom.jar}"/>
+      <pathelement path="${jna.jar}"/>
+      <pathelement path="${jnaerator.jar}"/>
       <pathelement path="${log4j.jar}"/>
       <pathelement path="${rxtx.jar}"/>
       <pathelement path="${terk-core.jar}"/>
@@ -116,12 +124,20 @@
    <target name="dist-hummingbird-core" depends="build-hummingbird-core" description="builds hummingbird-core" unless="dist-hummingbird-core-is-complete">
       <create-dist component.name="hummingbird-core">
          <additional-files-to-copy>
+            <fileset file="${commons-lang.jar}"/>
             <fileset file="${create-lab-commons-audio.jar}"/>
             <fileset file="${create-lab-commons-device.jar}"/>
             <fileset file="${create-lab-commons-serial.jar}"/>
+            <fileset file="${create-lab-commons-usb-hid.jar}"/>
             <fileset file="${create-lab-commons-util.jar}"/>
             <fileset file="${create-lab-commons-xml.jar}"/>
+            <fileset file="${hidapi1.native}"/>
+            <fileset file="${hidapi2.native}"/>
+            <fileset file="${hidapi3.native}"/>
+            <fileset file="${hidapi4.native}"/>
             <fileset file="${jdom.jar}"/>
+            <fileset file="${jna.jar}"/>
+            <fileset file="${jnaerator.jar}"/>
             <fileset file="${rxtx.jar}"/>
             <fileset file="${rxtx-linux.native}"/>
             <fileset file="${rxtx-macos.native1}"/>
@@ -149,12 +165,20 @@
       <create-dist component.name="hummingbird-applications">
          <additional-files-to-copy>
             <fileset file="${hummingbird-core.dist.dir}/${hummingbird-core.jar.filename}"/>
+            <fileset file="${commons-lang.jar}"/>
             <fileset file="${create-lab-commons-audio.jar}"/>
             <fileset file="${create-lab-commons-device.jar}"/>
             <fileset file="${create-lab-commons-serial.jar}"/>
+            <fileset file="${create-lab-commons-usb-hid.jar}"/>
             <fileset file="${create-lab-commons-util.jar}"/>
             <fileset file="${create-lab-commons-xml.jar}"/>
+            <fileset file="${hidapi1.native}"/>
+            <fileset file="${hidapi2.native}"/>
+            <fileset file="${hidapi3.native}"/>
+            <fileset file="${hidapi4.native}"/>
             <fileset file="${jdom.jar}"/>
+            <fileset file="${jna.jar}"/>
+            <fileset file="${jnaerator.jar}"/>
             <fileset file="${rxtx.jar}"/>
             <fileset file="${rxtx-linux.native}"/>
             <fileset file="${rxtx-macos.native1}"/>

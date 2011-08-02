@@ -13,6 +13,19 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">
+      <library name="Commons Lang">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/java/lib/commons-lang/commons-lang-2.5.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="http://commons.apache.org/lang/api-release/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/java/lib/commons-lang/commons-lang-2.5-sources.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
       <library name="CREATE Lab Commons Audio">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/java/lib/create-lab-commons-audio/create-lab-commons-audio.jar!/" />
@@ -46,6 +59,17 @@
       </library>
     </orderEntry>
     <orderEntry type="module-library">
+      <library name="CREATE Lab Commons USB HID">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/java/lib/create-lab-commons-usb-hid/create-lab-commons-usb-hid.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/java/lib/create-lab-commons-usb-hid/create-lab-commons-usb-hid-src.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
       <library name="CREATE Lab Commons Util">
         <CLASSES>
           <root url="jar://$MODULE_DIR$/java/lib/create-lab-commons-util/create-lab-commons-util.jar!/" />
@@ -75,6 +99,26 @@
         <JAVADOC>
           <root url="http://www.jdom.org/docs/apidocs" />
         </JAVADOC>
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="JNA">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/java/lib/JNA/jna.jar!/" />
+        </CLASSES>
+        <JAVADOC>
+          <root url="http://jna.dev.java.net/nonav/javadoc/" />
+        </JAVADOC>
+        <SOURCES />
+      </library>
+    </orderEntry>
+    <orderEntry type="module-library">
+      <library name="JNAerator">
+        <CLASSES>
+          <root url="jar://$MODULE_DIR$/java/lib/JNAerator/jnaerator-0.9.5.jar!/" />
+        </CLASSES>
+        <JAVADOC />
         <SOURCES />
       </library>
     </orderEntry>

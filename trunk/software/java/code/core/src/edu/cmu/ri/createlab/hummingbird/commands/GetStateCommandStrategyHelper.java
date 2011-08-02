@@ -4,15 +4,14 @@ import java.awt.Color;
 import java.util.Arrays;
 import edu.cmu.ri.createlab.hummingbird.Hummingbird;
 import edu.cmu.ri.createlab.hummingbird.HummingbirdConstants;
-import edu.cmu.ri.createlab.serial.CreateLabSerialDeviceReturnValueCommandStrategy;
-import edu.cmu.ri.createlab.serial.SerialDeviceCommandResponse;
 import edu.cmu.ri.createlab.util.ByteUtils;
+import edu.cmu.ri.createlab.util.commandexecution.CommandResponse;
 import org.apache.log4j.Logger;
 
 /**
  * @author Chris Bartley (bartley@cmu.edu)
  */
-public final class GetStateCommandStrategy extends CreateLabSerialDeviceReturnValueCommandStrategy<Hummingbird.HummingbirdState>
+public final class GetStateCommandStrategyHelper
    {
    /** The command character used to request the hummingbird's state. */
    private static final byte COMMAND_PREFIX = 'G';
@@ -22,25 +21,22 @@ public final class GetStateCommandStrategy extends CreateLabSerialDeviceReturnVa
 
    private final byte[] command;
 
-   public GetStateCommandStrategy()
+   public GetStateCommandStrategyHelper()
       {
       this.command = new byte[]{COMMAND_PREFIX};
       }
 
-   @Override
-   protected int getSizeOfExpectedResponse()
+   public int getSizeOfExpectedResponse()
       {
       return SIZE_IN_BYTES_OF_EXPECTED_RESPONSE;
       }
 
-   @Override
-   protected byte[] getCommand()
+   public byte[] getCommand()
       {
       return command.clone();
       }
 
-   @Override
-   public Hummingbird.HummingbirdState convertResponse(final SerialDeviceCommandResponse response)
+   public Hummingbird.HummingbirdState convertResponse(final CommandResponse response)
       {
       if (response != null && response.wasSuccessful())
          {

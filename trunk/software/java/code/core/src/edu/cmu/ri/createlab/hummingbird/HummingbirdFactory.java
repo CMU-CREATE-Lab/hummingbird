@@ -22,22 +22,23 @@ public class HummingbirdFactory
    private static final String PATH_SEPARATOR = System.getProperty("path.separator", ":");
 
    /**
-    * Creates the {@link Hummingbird} by repeatedly attempting to connect to all available serial ports and
-    * connecting to the first Hummingbird it finds.  This method will repeatedly retry and will only return when either
-    * a connection is established, or an unrecoverable failure is encountered in which case <code>null</code> is returned.
+    * Creates the {@link Hummingbird} by repeatedly attempting to connect to one as a USB HID device or, if that fails,
+    * by checking all available serial ports and connecting to the first Hummingbird it finds.  This method will
+    * repeatedly retry and will only return when either a connection is established, or an unrecoverable failure is
+    * encountered in which case <code>null</code> is returned.
     */
    public static Hummingbird create()
       {
-      return create((List<String>)null);
+      return create(null);
       }
 
    /**
-    * Creates the {@link Hummingbird} by repeatedly attempting to connect to a Hummingbird on the given serial port(s).
-    * Note that if one ore more serial ports is already specified as a system property (e.g. by using the -D command
-    * line switch), then the serial port(s) specified in the argument to this constructor are appended to the port names
-    * specified in the system property, and the system property value is updated.  This method will repeatedly retry and
-    * will only return when either a connection is established, or an unrecoverable failure is encountered in which case
-    * <code>null</code> is returned.
+    * Creates the {@link Hummingbird} by repeatedly attempting to connect to a Hummingbird as a USB HID device or, if
+    * that fails, on the given serial port(s). Note that if one ore more serial ports is already specified as a system
+    * property (e.g. by using the -D command line switch), then the serial port(s) specified in the argument to this
+    * constructor are appended to the port names specified in the system property, and the system property value is
+    * updated.  This method will repeatedly retry and will only return when either a connection is established, or an
+    * unrecoverable failure is encountered in which case <code>null</code> is returned.
     */
    public static Hummingbird create(final List<String> userDefinedSerialPortNames) throws ConnectionException
       {
@@ -101,9 +102,18 @@ public class HummingbirdFactory
     *
     * @throws IllegalArgumentException if the <code>serialPortName</code> is <code>null</code>
     */
-   public static Hummingbird create(final String serialPortName)
+   public static Hummingbird createSerialHummingbird(final String serialPortName)
       {
-      return HummingbirdProxy.create(serialPortName);
+      return SerialHummingbirdProxy.create(serialPortName);
+      }
+
+   /**
+    * Tries to create a <code>Hummingbird</code> by connecting to an HID hummingbird.  Returns <code>null</code> if the
+    * connection could not be established.
+    */
+   public static Hummingbird createHidHummingbird()
+      {
+      return HIDHummingbirdProxy.create();
       }
 
    private HummingbirdFactory()
