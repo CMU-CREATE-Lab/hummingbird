@@ -25,17 +25,22 @@ public class HummingbirdServiceManager extends AbstractServiceManager
    private static final Logger LOG = Logger.getLogger(HummingbirdServiceManager.class);
 
    private final Hummingbird hummingbird;
-   private final HummingbirdServiceFactory serviceFactory = new HummingbirdServiceFactory();
+   private final HummingbirdServiceFactory serviceFactory;
    private final Map<String, Service> loadedServices = Collections.synchronizedMap(new HashMap<String, Service>());
 
-   public HummingbirdServiceManager(final Hummingbird hummingbird)
+   public HummingbirdServiceManager(final Hummingbird hummingbird, final HummingbirdServiceFactoryHelper hummingbirdServiceFactoryHelper)
       {
       if (hummingbird == null)
          {
          throw new IllegalArgumentException("HummingbirdProxy may not be null");
          }
+      if (hummingbirdServiceFactoryHelper == null)
+         {
+         throw new IllegalArgumentException("HummingbirdServiceFactoryHelper may not be null");
+         }
 
       this.hummingbird = hummingbird;
+      this.serviceFactory = new HummingbirdServiceFactory(hummingbirdServiceFactoryHelper);
 
       // get the collection of supported services from the hummingbird
       final Set<String> supportedServices = new HashSet<String>();

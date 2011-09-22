@@ -6,11 +6,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.SortedMap;
+import edu.cmu.ri.createlab.CreateLabConstants;
 import edu.cmu.ri.createlab.device.CreateLabDevicePingFailureEventListener;
 import edu.cmu.ri.createlab.hummingbird.Hummingbird;
 import edu.cmu.ri.createlab.hummingbird.HummingbirdConstants;
 import edu.cmu.ri.createlab.hummingbird.HummingbirdFactory;
 import edu.cmu.ri.createlab.hummingbird.services.HummingbirdService;
+import edu.cmu.ri.createlab.hummingbird.services.HummingbirdServiceFactoryHelper;
 import edu.cmu.ri.createlab.hummingbird.services.HummingbirdServiceManager;
 import edu.cmu.ri.createlab.serial.commandline.SerialDeviceCommandLineApplication;
 import edu.cmu.ri.createlab.terk.services.ServiceManager;
@@ -28,7 +30,6 @@ import edu.cmu.ri.createlab.util.FileUtils;
  */
 public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
    {
-
    public static void main(final String[] args)
       {
       final BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
@@ -38,6 +39,15 @@ public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
 
    private Hummingbird hummingbird;
    private ServiceManager serviceManager;
+   private final HummingbirdServiceFactoryHelper hummingbirdServiceFactoryHelper =
+         new HummingbirdServiceFactoryHelper()
+         {
+         @Override
+         public File getAudioDirectory()
+            {
+            return CreateLabConstants.FilePaths.AUDIO_DIR;
+            }
+         };
 
    private final CreateLabDevicePingFailureEventListener pingFailureEventListener =
          new CreateLabDevicePingFailureEventListener()
@@ -86,7 +96,7 @@ public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
                else
                   {
                   hummingbird.addCreateLabDevicePingFailureEventListener(pingFailureEventListener);
-                  serviceManager = new HummingbirdServiceManager(hummingbird);
+                  serviceManager = new HummingbirdServiceManager(hummingbird, hummingbirdServiceFactoryHelper);
                   println("Connection successful!");
                   }
                }
@@ -129,7 +139,7 @@ public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
                         else
                            {
                            hummingbird.addCreateLabDevicePingFailureEventListener(pingFailureEventListener);
-                           serviceManager = new HummingbirdServiceManager(hummingbird);
+                           serviceManager = new HummingbirdServiceManager(hummingbird, hummingbirdServiceFactoryHelper);
                            println("Connection successful!");
                            }
                         }
@@ -163,7 +173,7 @@ public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
                else
                   {
                   hummingbird.addCreateLabDevicePingFailureEventListener(pingFailureEventListener);
-                  serviceManager = new HummingbirdServiceManager(hummingbird);
+                  serviceManager = new HummingbirdServiceManager(hummingbird, hummingbirdServiceFactoryHelper);
                   println("Connection successful!");
                   }
                }

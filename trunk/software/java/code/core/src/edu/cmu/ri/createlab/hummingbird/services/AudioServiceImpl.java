@@ -1,5 +1,6 @@
 package edu.cmu.ri.createlab.hummingbird.services;
 
+import java.io.File;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import edu.cmu.ri.createlab.hummingbird.Hummingbird;
@@ -19,7 +20,7 @@ final class AudioServiceImpl extends BaseAudioServiceImpl
    {
    private static final Logger LOG = Logger.getLogger(AudioServiceImpl.class);
 
-   static AudioServiceImpl create(final Hummingbird hummingbird)
+   static AudioServiceImpl create(final Hummingbird hummingbird, final File audioDirectory)
       {
       final BasicPropertyManager basicPropertyManager = new BasicPropertyManager();
 
@@ -32,16 +33,18 @@ final class AudioServiceImpl extends BaseAudioServiceImpl
       basicPropertyManager.setReadOnlyProperty(AudioService.PROPERTY_NAME_MAX_FREQUENCY, HummingbirdConstants.AUDIO_DEVICE_MAX_FREQUENCY);
 
       return new AudioServiceImpl(hummingbird,
-                                  basicPropertyManager);
+                                  basicPropertyManager,
+                                  audioDirectory);
       }
 
    private final Hummingbird hummingbird;
    private final Executor executor = Executors.newCachedThreadPool();
 
    private AudioServiceImpl(final Hummingbird hummingbird,
-                            final PropertyManager propertyManager)
+                            final PropertyManager propertyManager,
+                            final File audioDirectory)
       {
-      super(propertyManager);
+      super(propertyManager, audioDirectory);
       this.hummingbird = hummingbird;
       }
 

@@ -23,7 +23,7 @@ public final class HummingbirdServiceFactory
 
    private final Map<String, ServiceCreator<Hummingbird>> typeIdToServiceCreatorsMap = new HashMap<String, ServiceCreator<Hummingbird>>();
 
-   public HummingbirdServiceFactory()
+   public HummingbirdServiceFactory(final HummingbirdServiceFactoryHelper hummingbirdServiceFactoryHelper)
       {
       typeIdToServiceCreatorsMap.put(AnalogInputsService.TYPE_ID,
                                      new ServiceCreator<Hummingbird>()
@@ -38,7 +38,7 @@ public final class HummingbirdServiceFactory
                                      {
                                      public Service createService(final Hummingbird hummingbird)
                                         {
-                                        return AudioServiceImpl.create(hummingbird);
+                                        return AudioServiceImpl.create(hummingbird, hummingbirdServiceFactoryHelper.getAudioDirectory());
                                         }
                                      });
       typeIdToServiceCreatorsMap.put(FullColorLEDService.TYPE_ID,
