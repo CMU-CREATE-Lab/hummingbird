@@ -12,12 +12,12 @@ public final class VibrationMotorCommandStrategy extends CreateLabSerialDeviceNo
 
    public VibrationMotorCommandStrategy(final int motorId, final int speed)
       {
-      helper = new VibrationMotorCommandStrategyHelper(motorId, speed, SerialDeviceIndexConversionStrategy.getInstance());
+      helper = new VibrationMotorCommandStrategyHelper(motorId, speed);
       }
 
    public VibrationMotorCommandStrategy(final boolean[] motorMask, final int[] speeds)
       {
-      helper = new VibrationMotorCommandStrategyHelper(motorMask, speeds, SerialDeviceIndexConversionStrategy.getInstance());
+      helper = new VibrationMotorCommandStrategyHelper(motorMask, speeds);
       }
 
    @Override

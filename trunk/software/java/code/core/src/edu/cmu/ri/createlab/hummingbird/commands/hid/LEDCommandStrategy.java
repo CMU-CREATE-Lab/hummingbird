@@ -15,12 +15,12 @@ public final class LEDCommandStrategy extends CreateLabHIDCommandStrategy
 
    public LEDCommandStrategy(final int ledId, final int intensity)
       {
-      helper = new LEDCommandStrategyHelper(ledId, intensity, HIDDeviceIndexConversionStrategy.getInstance());
+      helper = new LEDCommandStrategyHelper(ledId, intensity);
       }
 
    public LEDCommandStrategy(final boolean[] mask, final int[] intensities)
       {
-      helper = new LEDCommandStrategyHelper(mask, intensities, HIDDeviceIndexConversionStrategy.getInstance());
+      helper = new LEDCommandStrategyHelper(mask, intensities);
       }
 
    @Override

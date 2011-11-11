@@ -15,12 +15,12 @@ public final class VibrationMotorCommandStrategy extends CreateLabHIDCommandStra
 
    public VibrationMotorCommandStrategy(final int motorId, final int speed)
       {
-      helper = new VibrationMotorCommandStrategyHelper(motorId, speed, HIDDeviceIndexConversionStrategy.getInstance());
+      helper = new VibrationMotorCommandStrategyHelper(motorId, speed);
       }
 
    public VibrationMotorCommandStrategy(final boolean[] motorMask, final int[] speeds)
       {
-      helper = new VibrationMotorCommandStrategyHelper(motorMask, speeds, HIDDeviceIndexConversionStrategy.getInstance());
+      helper = new VibrationMotorCommandStrategyHelper(motorMask, speeds);
       }
 
    @Override

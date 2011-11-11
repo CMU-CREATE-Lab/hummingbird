@@ -16,12 +16,12 @@ public final class FullColorLEDCommandStrategy extends CreateLabHIDCommandStrate
 
    public FullColorLEDCommandStrategy(final int ledId, final int red, final int green, final int blue)
       {
-      helper = new FullColorLEDCommandStrategyHelper(ledId, red, green, blue, HIDDeviceIndexConversionStrategy.getInstance());
+      helper = new FullColorLEDCommandStrategyHelper(ledId, red, green, blue);
       }
 
    public FullColorLEDCommandStrategy(final boolean[] mask, final Color[] colors)
       {
-      helper = new FullColorLEDCommandStrategyHelper(mask, colors, HIDDeviceIndexConversionStrategy.getInstance());
+      helper = new FullColorLEDCommandStrategyHelper(mask, colors);
       }
 
    @Override

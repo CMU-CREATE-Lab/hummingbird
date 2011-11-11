@@ -15,12 +15,12 @@ public final class MotorCommandStrategy extends CreateLabHIDCommandStrategy
 
    public MotorCommandStrategy(final int motorId, final int velocity)
       {
-      helper = new MotorCommandStrategyHelper(motorId, velocity, HIDDeviceIndexConversionStrategy.getInstance());
+      helper = new MotorCommandStrategyHelper(motorId, velocity);
       }
 
    public MotorCommandStrategy(final boolean[] motorMask, final int[] velocities)
       {
-      helper = new MotorCommandStrategyHelper(motorMask, velocities, HIDDeviceIndexConversionStrategy.getInstance());
+      helper = new MotorCommandStrategyHelper(motorMask, velocities);
       }
 
    @Override

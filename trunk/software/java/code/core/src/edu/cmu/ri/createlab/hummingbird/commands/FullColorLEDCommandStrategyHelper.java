@@ -9,7 +9,7 @@ import edu.cmu.ri.createlab.util.ByteUtils;
 /**
  * @author Chris Bartley (bartley@cmu.edu)
  */
-public final class FullColorLEDCommandStrategyHelper
+public final class FullColorLEDCommandStrategyHelper extends BaseCommandStrategyHelper
    {
    /** The command character used to turn on a full-color LED. */
    private static final byte COMMAND_PREFIX = 'O';
@@ -18,7 +18,7 @@ public final class FullColorLEDCommandStrategyHelper
 
    private final byte[] command;
 
-   public FullColorLEDCommandStrategyHelper(final int ledId, final int red, final int green, final int blue, final DeviceIndexConversionStrategy indexConversionStrategy)
+   public FullColorLEDCommandStrategyHelper(final int ledId, final int red, final int green, final int blue)
       {
       if (ledId < 0 || ledId >= HummingbirdConstants.FULL_COLOR_LED_DEVICE_COUNT)
          {
@@ -27,13 +27,13 @@ public final class FullColorLEDCommandStrategyHelper
 
       // construct the command
       this.command = new byte[]{COMMAND_PREFIX,
-                                indexConversionStrategy.convertDeviceIndex(ledId),
+                                convertDeviceIndex(ledId),
                                 ByteUtils.intToUnsignedByte(red),
                                 ByteUtils.intToUnsignedByte(green),
                                 ByteUtils.intToUnsignedByte(blue)};
       }
 
-   public FullColorLEDCommandStrategyHelper(final boolean[] mask, final Color[] colors, final DeviceIndexConversionStrategy indexConversionStrategy)
+   public FullColorLEDCommandStrategyHelper(final boolean[] mask, final Color[] colors)
       {
       // figure out which ids are masked on
       final Set<Integer> maskedIndeces = new HashSet<Integer>();
@@ -53,7 +53,7 @@ public final class FullColorLEDCommandStrategyHelper
          {
          final Color color = colors[index];
          this.command[i * BYTES_PER_COMMAND] = COMMAND_PREFIX;
-         this.command[i * BYTES_PER_COMMAND + 1] = indexConversionStrategy.convertDeviceIndex(index);
+         this.command[i * BYTES_PER_COMMAND + 1] = convertDeviceIndex(index);
          this.command[i * BYTES_PER_COMMAND + 2] = ByteUtils.intToUnsignedByte(Math.abs(color.getRed()));
          this.command[i * BYTES_PER_COMMAND + 3] = ByteUtils.intToUnsignedByte(Math.abs(color.getGreen()));
          this.command[i * BYTES_PER_COMMAND + 4] = ByteUtils.intToUnsignedByte(Math.abs(color.getBlue()));

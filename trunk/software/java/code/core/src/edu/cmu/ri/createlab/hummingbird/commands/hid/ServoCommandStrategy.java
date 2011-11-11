@@ -22,13 +22,13 @@ public final class ServoCommandStrategy extends CreateLabHIDCommandStrategy
          }
 
       helper = new ServoCommandStrategyHelper(servoId,
-                                              position,
-                                              HIDDeviceIndexConversionStrategy.getInstance());
+                                              position
+      );
       }
 
    public ServoCommandStrategy(final boolean[] mask, final int[] positions)
       {
-      helper = new ServoCommandStrategyHelper(mask, positions, HIDDeviceIndexConversionStrategy.getInstance());
+      helper = new ServoCommandStrategyHelper(mask, positions);
       }
 
    @Override
