@@ -8,7 +8,7 @@ import edu.cmu.ri.createlab.util.ByteUtils;
 /**
  * @author Chris Bartley (bartley@cmu.edu)
  */
-public final class MotorCommandStrategyHelper
+public final class MotorCommandStrategyHelper extends BaseCommandStrategyHelper
    {
    /** The command character used to turn on a motor. */
    private static final byte COMMAND_PREFIX = 'M';
@@ -17,7 +17,7 @@ public final class MotorCommandStrategyHelper
 
    private final byte[] command;
 
-   public MotorCommandStrategyHelper(final int motorId, final int velocity, final DeviceIndexConversionStrategy indexConversionStrategy)
+   public MotorCommandStrategyHelper(final int motorId, final int velocity)
       {
       if (motorId < 0 || motorId >= HummingbirdConstants.MOTOR_DEVICE_COUNT)
          {
@@ -25,12 +25,12 @@ public final class MotorCommandStrategyHelper
          }
 
       this.command = new byte[]{COMMAND_PREFIX,
-                                indexConversionStrategy.convertDeviceIndex(motorId),
+                                convertDeviceIndex(motorId),
                                 (byte)computeDirection(velocity),
                                 ByteUtils.intToUnsignedByte(Math.abs(velocity))};
       }
 
-   public MotorCommandStrategyHelper(final boolean[] motorMask, final int[] velocities, final DeviceIndexConversionStrategy indexConversionStrategy)
+   public MotorCommandStrategyHelper(final boolean[] motorMask, final int[] velocities)
       {
       // figure out which ids are masked on
       final Set<Integer> maskedIndeces = new HashSet<Integer>();
@@ -49,7 +49,7 @@ public final class MotorCommandStrategyHelper
       for (final int index : maskedIndeces)
          {
          this.command[i * BYTES_PER_COMMAND] = COMMAND_PREFIX;
-         this.command[i * BYTES_PER_COMMAND + 1] = indexConversionStrategy.convertDeviceIndex(index);
+         this.command[i * BYTES_PER_COMMAND + 1] = convertDeviceIndex(index);
          this.command[i * BYTES_PER_COMMAND + 2] = (byte)computeDirection(velocities[index]);
          this.command[i * BYTES_PER_COMMAND + 3] = ByteUtils.intToUnsignedByte(Math.abs(velocities[index]));
          i++;

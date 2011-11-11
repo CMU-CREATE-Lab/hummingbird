@@ -12,12 +12,12 @@ public final class MotorCommandStrategy extends CreateLabSerialDeviceNoReturnVal
 
    public MotorCommandStrategy(final int motorId, final int velocity)
       {
-      helper = new MotorCommandStrategyHelper(motorId, velocity, SerialDeviceIndexConversionStrategy.getInstance());
+      helper = new MotorCommandStrategyHelper(motorId, velocity);
       }
 
    public MotorCommandStrategy(final boolean[] motorMask, final int[] velocities)
       {
-      helper = new MotorCommandStrategyHelper(motorMask, velocities, SerialDeviceIndexConversionStrategy.getInstance());
+      helper = new MotorCommandStrategyHelper(motorMask, velocities);
       }
 
    @Override

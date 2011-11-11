@@ -18,12 +18,12 @@ public final class ServoCommandStrategy extends CreateLabSerialDeviceNoReturnVal
          throw new IllegalArgumentException("Invalid servo index");
          }
 
-      helper = new ServoCommandStrategyHelper(servoId, position, SerialDeviceIndexConversionStrategy.getInstance());
+      helper = new ServoCommandStrategyHelper(servoId, position);
       }
 
    public ServoCommandStrategy(final boolean[] mask, final int[] positions)
       {
-      helper = new ServoCommandStrategyHelper(mask, positions, SerialDeviceIndexConversionStrategy.getInstance());
+      helper = new ServoCommandStrategyHelper(mask, positions);
       }
 
    @Override

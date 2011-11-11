@@ -13,12 +13,12 @@ public final class FullColorLEDCommandStrategy extends CreateLabSerialDeviceNoRe
 
    public FullColorLEDCommandStrategy(final int ledId, final int red, final int green, final int blue)
       {
-      helper = new FullColorLEDCommandStrategyHelper(ledId, red, green, blue, SerialDeviceIndexConversionStrategy.getInstance());
+      helper = new FullColorLEDCommandStrategyHelper(ledId, red, green, blue);
       }
 
    public FullColorLEDCommandStrategy(final boolean[] mask, final Color[] colors)
       {
-      helper = new FullColorLEDCommandStrategyHelper(mask, colors, SerialDeviceIndexConversionStrategy.getInstance());
+      helper = new FullColorLEDCommandStrategyHelper(mask, colors);
       }
 
    @Override

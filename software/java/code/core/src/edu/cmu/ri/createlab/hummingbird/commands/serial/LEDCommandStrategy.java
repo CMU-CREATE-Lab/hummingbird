@@ -12,12 +12,12 @@ public final class LEDCommandStrategy extends CreateLabSerialDeviceNoReturnValue
 
    public LEDCommandStrategy(final int ledId, final int intensity)
       {
-      helper = new LEDCommandStrategyHelper(ledId, intensity, SerialDeviceIndexConversionStrategy.getInstance());
+      helper = new LEDCommandStrategyHelper(ledId, intensity);
       }
 
    public LEDCommandStrategy(final boolean[] mask, final int[] intensities)
       {
-      helper = new LEDCommandStrategyHelper(mask, intensities, SerialDeviceIndexConversionStrategy.getInstance());
+      helper = new LEDCommandStrategyHelper(mask, intensities);
       }
 
    @Override

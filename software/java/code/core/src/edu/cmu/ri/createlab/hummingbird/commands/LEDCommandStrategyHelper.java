@@ -8,7 +8,7 @@ import edu.cmu.ri.createlab.util.ByteUtils;
 /**
  * @author Chris Bartley (bartley@cmu.edu)
  */
-public final class LEDCommandStrategyHelper
+public final class LEDCommandStrategyHelper extends BaseCommandStrategyHelper
    {
    /** The command character used to turn on an LED. */
    private static final byte COMMAND_PREFIX = 'L';
@@ -17,7 +17,7 @@ public final class LEDCommandStrategyHelper
 
    private final byte[] command;
 
-   public LEDCommandStrategyHelper(final int ledId, final int intensity, final DeviceIndexConversionStrategy indexConversionStrategy)
+   public LEDCommandStrategyHelper(final int ledId, final int intensity)
       {
       if (ledId < 0 || ledId >= HummingbirdConstants.SIMPLE_LED_DEVICE_COUNT)
          {
@@ -25,11 +25,11 @@ public final class LEDCommandStrategyHelper
          }
 
       this.command = new byte[]{COMMAND_PREFIX,
-                                indexConversionStrategy.convertDeviceIndex(ledId),
+                                convertDeviceIndex(ledId),
                                 ByteUtils.intToUnsignedByte(intensity)};
       }
 
-   public LEDCommandStrategyHelper(final boolean[] mask, final int[] intensities, final DeviceIndexConversionStrategy indexConversionStrategy)
+   public LEDCommandStrategyHelper(final boolean[] mask, final int[] intensities)
       {
       // figure out which ids are masked on
       final Set<Integer> maskedIndeces = new HashSet<Integer>();
@@ -48,7 +48,7 @@ public final class LEDCommandStrategyHelper
       for (final int index : maskedIndeces)
          {
          this.command[i * BYTES_PER_COMMAND] = COMMAND_PREFIX;
-         this.command[i * BYTES_PER_COMMAND + 1] = indexConversionStrategy.convertDeviceIndex(index);
+         this.command[i * BYTES_PER_COMMAND + 1] = convertDeviceIndex(index);
          this.command[i * BYTES_PER_COMMAND + 2] = ByteUtils.intToUnsignedByte(Math.abs(intensities[index]));
          i++;
          }

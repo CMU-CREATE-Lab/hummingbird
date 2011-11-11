@@ -8,7 +8,7 @@ import edu.cmu.ri.createlab.util.ByteUtils;
 /**
  * @author Chris Bartley (bartley@cmu.edu)
  */
-public final class ServoCommandStrategyHelper
+public final class ServoCommandStrategyHelper extends BaseCommandStrategyHelper
    {
    /** The command character used to turn on a servo motor. */
    private static final byte COMMAND_PREFIX = 'S';
@@ -17,14 +17,14 @@ public final class ServoCommandStrategyHelper
 
    private final byte[] command;
 
-   public ServoCommandStrategyHelper(final int servoId, final int position, final DeviceIndexConversionStrategy indexConversionStrategy)
+   public ServoCommandStrategyHelper(final int servoId, final int position)
       {
       this.command = new byte[]{COMMAND_PREFIX,
-                                indexConversionStrategy.convertDeviceIndex((servoId)),
+                                convertDeviceIndex((servoId)),
                                 ByteUtils.intToUnsignedByte(position)};
       }
 
-   public ServoCommandStrategyHelper(final boolean[] mask, final int[] positions, final DeviceIndexConversionStrategy indexConversionStrategy)
+   public ServoCommandStrategyHelper(final boolean[] mask, final int[] positions)
       {
       // figure out which ids are masked on
       final Set<Integer> maskedIndeces = new HashSet<Integer>();
@@ -43,7 +43,7 @@ public final class ServoCommandStrategyHelper
       for (final int index : maskedIndeces)
          {
          this.command[i * BYTES_PER_COMMAND] = COMMAND_PREFIX;
-         this.command[i * BYTES_PER_COMMAND + 1] = indexConversionStrategy.convertDeviceIndex((index));
+         this.command[i * BYTES_PER_COMMAND + 1] = convertDeviceIndex((index));
          this.command[i * BYTES_PER_COMMAND + 2] = ByteUtils.intToUnsignedByte(Math.abs(positions[index]));
          i++;
          }

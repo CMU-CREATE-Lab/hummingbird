@@ -8,7 +8,7 @@ import edu.cmu.ri.createlab.util.ByteUtils;
 /**
  * @author Chris Bartley (bartley@cmu.edu)
  */
-public final class VibrationMotorCommandStrategyHelper
+public final class VibrationMotorCommandStrategyHelper extends BaseCommandStrategyHelper
    {
    /** The command character used to turn on a vibration motor. */
    private static final byte COMMAND_PREFIX = 'V';
@@ -17,7 +17,7 @@ public final class VibrationMotorCommandStrategyHelper
 
    private final byte[] command;
 
-   public VibrationMotorCommandStrategyHelper(final int motorId, final int speed, final DeviceIndexConversionStrategy indexConversionStrategy)
+   public VibrationMotorCommandStrategyHelper(final int motorId, final int speed)
       {
       if (motorId < 0 || motorId >= HummingbirdConstants.VIBRATION_MOTOR_DEVICE_COUNT)
          {
@@ -26,11 +26,11 @@ public final class VibrationMotorCommandStrategyHelper
 
       final int absoluteSpeed = Math.abs(speed);
       this.command = new byte[]{COMMAND_PREFIX,
-                                indexConversionStrategy.convertDeviceIndex(motorId),
+                                convertDeviceIndex(motorId),
                                 ByteUtils.intToUnsignedByte(absoluteSpeed)};
       }
 
-   public VibrationMotorCommandStrategyHelper(final boolean[] motorMask, final int[] speeds, final DeviceIndexConversionStrategy indexConversionStrategy)
+   public VibrationMotorCommandStrategyHelper(final boolean[] motorMask, final int[] speeds)
       {
       // figure out which ids are masked on
       final Set<Integer> maskedIndeces = new HashSet<Integer>();
@@ -49,7 +49,7 @@ public final class VibrationMotorCommandStrategyHelper
       for (final int index : maskedIndeces)
          {
          this.command[i * BYTES_PER_COMMAND] = COMMAND_PREFIX;
-         this.command[i * BYTES_PER_COMMAND + 1] = indexConversionStrategy.convertDeviceIndex(index);
+         this.command[i * BYTES_PER_COMMAND + 1] = convertDeviceIndex(index);
          this.command[i * BYTES_PER_COMMAND + 2] = ByteUtils.intToUnsignedByte(Math.abs(speeds[index]));
          i++;
          }
