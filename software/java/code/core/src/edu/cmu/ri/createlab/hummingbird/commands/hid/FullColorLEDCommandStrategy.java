@@ -1,6 +1,7 @@
 package edu.cmu.ri.createlab.hummingbird.commands.hid;
 
 import java.awt.Color;
+import edu.cmu.ri.createlab.hummingbird.HummingbirdProperties;
 import edu.cmu.ri.createlab.hummingbird.commands.FullColorLEDCommandStrategyHelper;
 import edu.cmu.ri.createlab.usb.hid.CreateLabHIDCommandStrategy;
 
@@ -14,14 +15,14 @@ public final class FullColorLEDCommandStrategy extends CreateLabHIDCommandStrate
 
    private final FullColorLEDCommandStrategyHelper helper;
 
-   public FullColorLEDCommandStrategy(final int ledId, final int red, final int green, final int blue)
+   public FullColorLEDCommandStrategy(final int ledId, final int red, final int green, final int blue, final HummingbirdProperties hummingbirdProperties)
       {
-      helper = new FullColorLEDCommandStrategyHelper(ledId, red, green, blue);
+      helper = new FullColorLEDCommandStrategyHelper(ledId, red, green, blue, hummingbirdProperties);
       }
 
-   public FullColorLEDCommandStrategy(final boolean[] mask, final Color[] colors)
+   public FullColorLEDCommandStrategy(final boolean[] mask, final Color[] colors, final HummingbirdProperties hummingbirdProperties)
       {
-      helper = new FullColorLEDCommandStrategyHelper(mask, colors);
+      helper = new FullColorLEDCommandStrategyHelper(mask, colors, hummingbirdProperties);
       }
 
    @Override

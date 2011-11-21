@@ -1,5 +1,6 @@
 package edu.cmu.ri.createlab.hummingbird.commands.serial;
 
+import edu.cmu.ri.createlab.hummingbird.HummingbirdProperties;
 import edu.cmu.ri.createlab.hummingbird.commands.LEDCommandStrategyHelper;
 import edu.cmu.ri.createlab.serial.CreateLabSerialDeviceNoReturnValueCommandStrategy;
 
@@ -10,14 +11,14 @@ public final class LEDCommandStrategy extends CreateLabSerialDeviceNoReturnValue
    {
    private final LEDCommandStrategyHelper helper;
 
-   public LEDCommandStrategy(final int ledId, final int intensity)
+   public LEDCommandStrategy(final int ledId, final int intensity, final HummingbirdProperties hummingbirdProperties)
       {
-      helper = new LEDCommandStrategyHelper(ledId, intensity);
+      helper = new LEDCommandStrategyHelper(ledId, intensity, hummingbirdProperties);
       }
 
-   public LEDCommandStrategy(final boolean[] mask, final int[] intensities)
+   public LEDCommandStrategy(final boolean[] mask, final int[] intensities, final HummingbirdProperties hummingbirdProperties)
       {
-      helper = new LEDCommandStrategyHelper(mask, intensities);
+      helper = new LEDCommandStrategyHelper(mask, intensities, hummingbirdProperties);
       }
 
    @Override

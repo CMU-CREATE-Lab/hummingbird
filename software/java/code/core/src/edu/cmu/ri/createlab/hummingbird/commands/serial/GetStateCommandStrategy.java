@@ -1,6 +1,7 @@
 package edu.cmu.ri.createlab.hummingbird.commands.serial;
 
 import edu.cmu.ri.createlab.hummingbird.Hummingbird;
+import edu.cmu.ri.createlab.hummingbird.HummingbirdProperties;
 import edu.cmu.ri.createlab.hummingbird.commands.GetStateCommandStrategyHelper;
 import edu.cmu.ri.createlab.serial.CreateLabSerialDeviceReturnValueCommandStrategy;
 import edu.cmu.ri.createlab.serial.SerialDeviceCommandResponse;
@@ -10,7 +11,12 @@ import edu.cmu.ri.createlab.serial.SerialDeviceCommandResponse;
  */
 public final class GetStateCommandStrategy extends CreateLabSerialDeviceReturnValueCommandStrategy<Hummingbird.HummingbirdState>
    {
-   private final GetStateCommandStrategyHelper helper = new GetStateCommandStrategyHelper();
+   private final GetStateCommandStrategyHelper helper;
+
+   public GetStateCommandStrategy(final HummingbirdProperties hummingbirdProperties)
+      {
+      helper = new GetStateCommandStrategyHelper(hummingbirdProperties);
+      }
 
    @Override
    protected int getSizeOfExpectedResponse()

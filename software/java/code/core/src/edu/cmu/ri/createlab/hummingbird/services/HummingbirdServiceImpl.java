@@ -1,7 +1,8 @@
 package edu.cmu.ri.createlab.hummingbird.services;
 
 import edu.cmu.ri.createlab.hummingbird.Hummingbird;
-import edu.cmu.ri.createlab.hummingbird.HummingbirdConstants;
+import edu.cmu.ri.createlab.hummingbird.HummingbirdProperties;
+import edu.cmu.ri.createlab.hummingbird.HummingbirdVersionNumber;
 import edu.cmu.ri.createlab.terk.TerkConstants;
 import edu.cmu.ri.createlab.terk.properties.BasicPropertyManager;
 import edu.cmu.ri.createlab.terk.properties.PropertyManager;
@@ -14,15 +15,26 @@ final class HummingbirdServiceImpl extends BaseDeviceControllingService implemen
    {
    static HummingbirdServiceImpl create(final Hummingbird hummingbird)
       {
-      final BasicPropertyManager basicPropertyManager = new BasicPropertyManager();
+      final HummingbirdVersionNumber hardwareVersion = hummingbird.getHardwareVersion();
+      final HummingbirdVersionNumber firmwareVersion = hummingbird.getFirmwareVersion();
 
-      basicPropertyManager.setReadOnlyProperty(TerkConstants.PropertyKeys.DEVICE_COUNT, HummingbirdConstants.HUMMINGBIRD_DEVICE_COUNT);
-      basicPropertyManager.setReadOnlyProperty(TerkConstants.PropertyKeys.HARDWARE_TYPE, HummingbirdConstants.HARDWARE_TYPE);
-      basicPropertyManager.setReadOnlyProperty(TerkConstants.PropertyKeys.HARDWARE_VERSION, HummingbirdConstants.HARDWARE_VERSION);
+      final HummingbirdProperties hummingbirdProperties = hummingbird.getHummingbirdProperties();
+
+      final BasicPropertyManager basicPropertyManager = new BasicPropertyManager();
+      basicPropertyManager.setReadOnlyProperty(TerkConstants.PropertyKeys.DEVICE_COUNT, hummingbirdProperties.getHummingbirdDeviceCount());
+      basicPropertyManager.setReadOnlyProperty(TerkConstants.PropertyKeys.HARDWARE_TYPE, hummingbirdProperties.getHardwareType());
+      basicPropertyManager.setReadOnlyProperty(TerkConstants.PropertyKeys.HARDWARE_VERSION, hardwareVersion.getMajorMinorRevision());
+      basicPropertyManager.setReadOnlyProperty(TerkConstants.PropertyKeys.HARDWARE_VERSION_MAJOR, hardwareVersion.getMajorVersion());
+      basicPropertyManager.setReadOnlyProperty(TerkConstants.PropertyKeys.HARDWARE_VERSION_MINOR, hardwareVersion.getMinorVersion());
+      basicPropertyManager.setReadOnlyProperty(TerkConstants.PropertyKeys.HARDWARE_VERSION_REVISION, hardwareVersion.getRevision());
+      basicPropertyManager.setReadOnlyProperty(TerkConstants.PropertyKeys.FIRMWARE_VERSION, firmwareVersion.getMajorMinorRevision());
+      basicPropertyManager.setReadOnlyProperty(TerkConstants.PropertyKeys.FIRMWARE_VERSION_MAJOR, firmwareVersion.getMajorVersion());
+      basicPropertyManager.setReadOnlyProperty(TerkConstants.PropertyKeys.FIRMWARE_VERSION_MINOR, firmwareVersion.getMinorVersion());
+      basicPropertyManager.setReadOnlyProperty(TerkConstants.PropertyKeys.FIRMWARE_VERSION_REVISION, firmwareVersion.getRevision());
 
       return new HummingbirdServiceImpl(hummingbird,
                                         basicPropertyManager,
-                                        HummingbirdConstants.HUMMINGBIRD_DEVICE_COUNT);
+                                        hummingbirdProperties.getHummingbirdDeviceCount());
       }
 
    private final Hummingbird hummingbird;

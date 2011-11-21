@@ -1,6 +1,6 @@
 package edu.cmu.ri.createlab.hummingbird.commands.serial;
 
-import edu.cmu.ri.createlab.hummingbird.HummingbirdConstants;
+import edu.cmu.ri.createlab.hummingbird.HummingbirdProperties;
 import edu.cmu.ri.createlab.hummingbird.commands.ServoCommandStrategyHelper;
 import edu.cmu.ri.createlab.serial.CreateLabSerialDeviceNoReturnValueCommandStrategy;
 
@@ -11,19 +11,14 @@ public final class ServoCommandStrategy extends CreateLabSerialDeviceNoReturnVal
    {
    private final ServoCommandStrategyHelper helper;
 
-   public ServoCommandStrategy(final int servoId, final int position)
+   public ServoCommandStrategy(final int servoId, final int position, final HummingbirdProperties hummingbirdProperties)
       {
-      if (servoId < 0 || servoId >= HummingbirdConstants.SIMPLE_SERVO_DEVICE_COUNT)
-         {
-         throw new IllegalArgumentException("Invalid servo index");
-         }
-
-      helper = new ServoCommandStrategyHelper(servoId, position);
+      helper = new ServoCommandStrategyHelper(servoId, position, hummingbirdProperties);
       }
 
-   public ServoCommandStrategy(final boolean[] mask, final int[] positions)
+   public ServoCommandStrategy(final boolean[] mask, final int[] positions, final HummingbirdProperties hummingbirdProperties)
       {
-      helper = new ServoCommandStrategyHelper(mask, positions);
+      helper = new ServoCommandStrategyHelper(mask, positions, hummingbirdProperties);
       }
 
    @Override

@@ -9,6 +9,7 @@ package edu.cmu.ri.createlab.hummingbird.commands;
  */
 abstract class BaseCommandStrategyHelper
    {
+   /* Convert the given index to an ASCII character (note that this implies that the greatest index possible is 9). */
    protected final byte convertDeviceIndex(final int index)
       {
       return (byte)String.valueOf(index).charAt(0);

@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 import edu.cmu.ri.createlab.hummingbird.Hummingbird;
-import edu.cmu.ri.createlab.hummingbird.HummingbirdConstants;
+import edu.cmu.ri.createlab.hummingbird.HummingbirdProperties;
 import edu.cmu.ri.createlab.terk.TerkConstants;
 import edu.cmu.ri.createlab.terk.properties.BasicPropertyManager;
 import edu.cmu.ri.createlab.terk.properties.PropertyManager;
@@ -22,15 +22,17 @@ final class AudioServiceImpl extends BaseAudioServiceImpl
 
    static AudioServiceImpl create(final Hummingbird hummingbird, final File audioDirectory)
       {
+      final HummingbirdProperties hummingbirdProperties = hummingbird.getHummingbirdProperties();
+
       final BasicPropertyManager basicPropertyManager = new BasicPropertyManager();
 
-      basicPropertyManager.setReadOnlyProperty(TerkConstants.PropertyKeys.DEVICE_COUNT, HummingbirdConstants.AUDIO_DEVICE_COUNT);
-      basicPropertyManager.setReadOnlyProperty(AudioService.PROPERTY_NAME_MIN_AMPLITUDE, HummingbirdConstants.AUDIO_DEVICE_MIN_AMPLITUDE);
-      basicPropertyManager.setReadOnlyProperty(AudioService.PROPERTY_NAME_MAX_AMPLITUDE, HummingbirdConstants.AUDIO_DEVICE_MAX_AMPLITUDE);
-      basicPropertyManager.setReadOnlyProperty(AudioService.PROPERTY_NAME_MIN_DURATION, HummingbirdConstants.AUDIO_DEVICE_MIN_DURATION);
-      basicPropertyManager.setReadOnlyProperty(AudioService.PROPERTY_NAME_MAX_DURATION, HummingbirdConstants.AUDIO_DEVICE_MAX_DURATION);
-      basicPropertyManager.setReadOnlyProperty(AudioService.PROPERTY_NAME_MIN_FREQUENCY, HummingbirdConstants.AUDIO_DEVICE_MIN_FREQUENCY);
-      basicPropertyManager.setReadOnlyProperty(AudioService.PROPERTY_NAME_MAX_FREQUENCY, HummingbirdConstants.AUDIO_DEVICE_MAX_FREQUENCY);
+      basicPropertyManager.setReadOnlyProperty(TerkConstants.PropertyKeys.DEVICE_COUNT, hummingbirdProperties.getAudioDeviceCount());
+      basicPropertyManager.setReadOnlyProperty(AudioService.PROPERTY_NAME_MIN_AMPLITUDE, hummingbirdProperties.getAudioDeviceMinAmplitude());
+      basicPropertyManager.setReadOnlyProperty(AudioService.PROPERTY_NAME_MAX_AMPLITUDE, hummingbirdProperties.getAudioDeviceMaxAmplitude());
+      basicPropertyManager.setReadOnlyProperty(AudioService.PROPERTY_NAME_MIN_DURATION, hummingbirdProperties.getAudioDeviceMinDuration());
+      basicPropertyManager.setReadOnlyProperty(AudioService.PROPERTY_NAME_MAX_DURATION, hummingbirdProperties.getAudioDeviceMaxDuration());
+      basicPropertyManager.setReadOnlyProperty(AudioService.PROPERTY_NAME_MIN_FREQUENCY, hummingbirdProperties.getAudioDeviceMinFrequency());
+      basicPropertyManager.setReadOnlyProperty(AudioService.PROPERTY_NAME_MAX_FREQUENCY, hummingbirdProperties.getAudioDeviceMaxFrequency());
 
       return new AudioServiceImpl(hummingbird,
                                   basicPropertyManager,

@@ -2,7 +2,7 @@ package edu.cmu.ri.createlab.hummingbird.commands;
 
 import java.util.HashSet;
 import java.util.Set;
-import edu.cmu.ri.createlab.hummingbird.HummingbirdConstants;
+import edu.cmu.ri.createlab.hummingbird.HummingbirdProperties;
 import edu.cmu.ri.createlab.util.ByteUtils;
 
 /**
@@ -17,9 +17,9 @@ public final class MotorCommandStrategyHelper extends BaseCommandStrategyHelper
 
    private final byte[] command;
 
-   public MotorCommandStrategyHelper(final int motorId, final int velocity)
+   public MotorCommandStrategyHelper(final int motorId, final int velocity, final HummingbirdProperties hummingbirdProperties)
       {
-      if (motorId < 0 || motorId >= HummingbirdConstants.MOTOR_DEVICE_COUNT)
+      if (motorId < 0 || motorId >= hummingbirdProperties.getMotorDeviceCount())
          {
          throw new IllegalArgumentException("Invalid motor index");
          }
@@ -30,11 +30,11 @@ public final class MotorCommandStrategyHelper extends BaseCommandStrategyHelper
                                 ByteUtils.intToUnsignedByte(Math.abs(velocity))};
       }
 
-   public MotorCommandStrategyHelper(final boolean[] motorMask, final int[] velocities)
+   public MotorCommandStrategyHelper(final boolean[] motorMask, final int[] velocities, final HummingbirdProperties hummingbirdProperties)
       {
       // figure out which ids are masked on
       final Set<Integer> maskedIndeces = new HashSet<Integer>();
-      final int numIndecesToCheck = Math.min(Math.min(motorMask.length, velocities.length), HummingbirdConstants.MOTOR_DEVICE_COUNT);
+      final int numIndecesToCheck = Math.min(Math.min(motorMask.length, velocities.length), hummingbirdProperties.getMotorDeviceCount());
       for (int i = 0; i < numIndecesToCheck; i++)
          {
          if (motorMask[i])
