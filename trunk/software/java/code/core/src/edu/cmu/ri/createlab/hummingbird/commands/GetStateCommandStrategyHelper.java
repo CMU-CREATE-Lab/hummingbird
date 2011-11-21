@@ -3,7 +3,7 @@ package edu.cmu.ri.createlab.hummingbird.commands;
 import java.awt.Color;
 import java.util.Arrays;
 import edu.cmu.ri.createlab.hummingbird.Hummingbird;
-import edu.cmu.ri.createlab.hummingbird.HummingbirdConstants;
+import edu.cmu.ri.createlab.hummingbird.HummingbirdProperties;
 import edu.cmu.ri.createlab.util.ByteUtils;
 import edu.cmu.ri.createlab.util.commandexecution.CommandResponse;
 import org.apache.log4j.Logger;
@@ -16,13 +16,18 @@ public final class GetStateCommandStrategyHelper
    /** The command character used to request the hummingbird's state. */
    private static final byte COMMAND_PREFIX = 'G';
 
+   /** The size, in bytes, of the state array */
+   private static final int SIZE_IN_BYTES_OF_STATE_ARRAY = 22;
+
    /** The size of the expected response, in bytes */
-   private static final int SIZE_IN_BYTES_OF_EXPECTED_RESPONSE = HummingbirdConstants.SIZE_IN_BYTES_OF_STATE_ARRAY;
+   private static final int SIZE_IN_BYTES_OF_EXPECTED_RESPONSE = SIZE_IN_BYTES_OF_STATE_ARRAY;
 
    private final byte[] command;
+   private final HummingbirdProperties hummingbirdProperties;
 
-   public GetStateCommandStrategyHelper()
+   public GetStateCommandStrategyHelper(final HummingbirdProperties hummingbirdProperties)
       {
+      this.hummingbirdProperties = hummingbirdProperties;
       this.command = new byte[]{COMMAND_PREFIX};
       }
 
@@ -40,7 +45,7 @@ public final class GetStateCommandStrategyHelper
       {
       if (response != null && response.wasSuccessful())
          {
-         return HummingbirdStateImpl.create(response.getData());
+         return HummingbirdStateImpl.create(response.getData(), hummingbirdProperties);
          }
       return null;
       }
@@ -58,36 +63,39 @@ public final class GetStateCommandStrategyHelper
 
       private static final String EOL = System.getProperty("line.separator", "\n");
 
-      private final Orb[] orbs = new Orb[HummingbirdConstants.FULL_COLOR_LED_DEVICE_COUNT];
-      private final int[] leds = new int[HummingbirdConstants.SIMPLE_LED_DEVICE_COUNT];
-      private final int[] servos = new int[HummingbirdConstants.SIMPLE_SERVO_DEVICE_COUNT];
-      private final int[] motors = new int[HummingbirdConstants.MOTOR_DEVICE_COUNT];
-      private final int[] vibeMotors = new int[HummingbirdConstants.VIBRATION_MOTOR_DEVICE_COUNT];
-      private final int[] analogInputs = new int[HummingbirdConstants.ANALOG_INPUT_DEVICE_COUNT];
+      private static final boolean IS_MOTOR_POWER_ENABLED = true; // always true for serial hummingbirds
 
       /**
        * Creates a new <code>HummingbirdState</code> using the given state array.  Returns <code>null</code> if the given
-       * array is null or of a size other than {@link HummingbirdConstants#SIZE_IN_BYTES_OF_STATE_ARRAY}.
+       * array is null or of an unexpected size.
        */
-      private static HummingbirdStateImpl create(final byte[] state)
+      private static HummingbirdStateImpl create(final byte[] state, final HummingbirdProperties hummingbirdProperties)
          {
          if (state == null)
             {
             LOG.error("Invalid state array.  The state array cannot be null.");
             return null;
             }
-         if (state.length != HummingbirdConstants.SIZE_IN_BYTES_OF_STATE_ARRAY)
+         if (state.length != SIZE_IN_BYTES_OF_STATE_ARRAY)
             {
-            LOG.error("Invalid state array.  Array must be exactly " + HummingbirdConstants.SIZE_IN_BYTES_OF_STATE_ARRAY + " bytes.  Received array was " + state.length + " byte(s).");
+            LOG.error("Invalid state array.  Array must be exactly " + SIZE_IN_BYTES_OF_STATE_ARRAY + " bytes.  Received array was " + state.length + " byte(s).");
             return null;
             }
 
-         return new HummingbirdStateImpl(state);
+         return new HummingbirdStateImpl(state, hummingbirdProperties);
          }
 
-      private HummingbirdStateImpl(final byte[] state)
+      private final Orb[] orbs;
+      private final int[] leds;
+      private final int[] servos;
+      private final int[] motors;
+      private final int[] vibeMotors;
+      private final int[] analogInputs;
+
+      private HummingbirdStateImpl(final byte[] state, final HummingbirdProperties hummingbirdProperties)
          {
          // read state positions 0-2 for the first full-color LED
+         orbs = new Orb[hummingbirdProperties.getFullColorLedDeviceCount()];
          this.orbs[0] = new Orb(ByteUtils.unsignedByteToInt(state[0]),
                                 ByteUtils.unsignedByteToInt(state[1]),
                                 ByteUtils.unsignedByteToInt(state[2]));
@@ -98,30 +106,35 @@ public final class GetStateCommandStrategyHelper
                                 ByteUtils.unsignedByteToInt(state[5]));
 
          // read state positions 6-9 for the LEDs
+         leds = new int[hummingbirdProperties.getSimpleLedDeviceCount()];
          for (int i = 0; i < leds.length; i++)
             {
             this.leds[i] = ByteUtils.unsignedByteToInt(state[6 + i]);
             }
 
-         // read state positions 10-13 for the LEDs
+         // read state positions 10-13 for the servos
+         servos = new int[hummingbirdProperties.getSimpleServoDeviceCount()];
          for (int i = 0; i < servos.length; i++)
             {
             this.servos[i] = ByteUtils.unsignedByteToInt(state[10 + i]);
             }
 
          // read state positions 14-17 for motors 1 and 2 (first byte is direction, second is speed)
+         motors = new int[hummingbirdProperties.getMotorDeviceCount()];
          this.motors[0] = computeMotorVelocity(ByteUtils.unsignedByteToInt(state[14]),
                                                ByteUtils.unsignedByteToInt(state[15]));
          this.motors[1] = computeMotorVelocity(ByteUtils.unsignedByteToInt(state[16]),
                                                ByteUtils.unsignedByteToInt(state[17]));
 
          // read state positions 18-19 for the vibe motors
+         vibeMotors = new int[hummingbirdProperties.getVibrationMotorDeviceCount()];
          for (int i = 0; i < vibeMotors.length; i++)
             {
             this.vibeMotors[i] = ByteUtils.unsignedByteToInt(state[18 + i]);
             }
 
          // read state positions 20-21 for the analog inputs
+         analogInputs = new int[hummingbirdProperties.getAnalogInputDeviceCount()];
          for (int i = 0; i < analogInputs.length; i++)
             {
             this.analogInputs[i] = ByteUtils.unsignedByteToInt(state[20 + i]);
@@ -174,6 +187,12 @@ public final class GetStateCommandStrategyHelper
          }
 
       @Override
+      public boolean isMotorPowerEnabled()
+         {
+         return IS_MOTOR_POWER_ENABLED;
+         }
+
+      @Override
       public boolean equals(final Object o)
          {
          if (this == o)
@@ -187,6 +206,14 @@ public final class GetStateCommandStrategyHelper
 
          final HummingbirdStateImpl that = (HummingbirdStateImpl)o;
 
+         if (IS_MOTOR_POWER_ENABLED != that.IS_MOTOR_POWER_ENABLED)
+            {
+            return false;
+            }
+         if (!Arrays.equals(analogInputs, that.analogInputs))
+            {
+            return false;
+            }
          if (!Arrays.equals(leds, that.leds))
             {
             return false;
@@ -196,10 +223,6 @@ public final class GetStateCommandStrategyHelper
             return false;
             }
          if (!Arrays.equals(orbs, that.orbs))
-            {
-            return false;
-            }
-         if (!Arrays.equals(analogInputs, that.analogInputs))
             {
             return false;
             }
@@ -218,12 +241,13 @@ public final class GetStateCommandStrategyHelper
       @Override
       public int hashCode()
          {
-         int result = (orbs != null ? Arrays.hashCode(orbs) : 0);
+         int result = orbs != null ? Arrays.hashCode(orbs) : 0;
          result = 31 * result + (leds != null ? Arrays.hashCode(leds) : 0);
          result = 31 * result + (servos != null ? Arrays.hashCode(servos) : 0);
          result = 31 * result + (motors != null ? Arrays.hashCode(motors) : 0);
          result = 31 * result + (vibeMotors != null ? Arrays.hashCode(vibeMotors) : 0);
          result = 31 * result + (analogInputs != null ? Arrays.hashCode(analogInputs) : 0);
+         result = 31 * result + (IS_MOTOR_POWER_ENABLED ? 1 : 0);
          return result;
          }
 
@@ -233,28 +257,29 @@ public final class GetStateCommandStrategyHelper
          final StringBuilder s = new StringBuilder("HummingbirdState" + EOL);
          for (int i = 0; i < orbs.length; i++)
             {
-            s.append("   Orb ").append(i + 1).append(":        (").append(orbs[i].getR()).append(",").append(orbs[i].getG()).append(",").append(orbs[i].getB()).append(")").append(EOL);
+            s.append("   Orb ").append(i).append(":        (").append(orbs[i].getR()).append(",").append(orbs[i].getG()).append(",").append(orbs[i].getB()).append(")").append(EOL);
             }
          for (int i = 0; i < leds.length; i++)
             {
-            s.append("   LED ").append(i + 1).append(":        ").append(leds[i]).append(EOL);
+            s.append("   LED ").append(i).append(":        ").append(leds[i]).append(EOL);
             }
          for (int i = 0; i < servos.length; i++)
             {
-            s.append("   Servo ").append(i + 1).append(":      ").append(servos[i]).append(EOL);
+            s.append("   Servo ").append(i).append(":      ").append(servos[i]).append(EOL);
             }
          for (int i = 0; i < motors.length; i++)
             {
-            s.append("   Motor ").append(i + 1).append(":      ").append(motors[i]).append(EOL);
+            s.append("   Motor ").append(i).append(":      ").append(motors[i]).append(EOL);
             }
          for (int i = 0; i < vibeMotors.length; i++)
             {
-            s.append("   Vibe Motor ").append(i + 1).append(": ").append(vibeMotors[i]).append(EOL);
+            s.append("   Vibe Motor ").append(i).append(": ").append(vibeMotors[i]).append(EOL);
             }
          for (int i = 0; i < analogInputs.length; i++)
             {
-            s.append("   Sensor ").append(i + 1).append(":     ").append(analogInputs[i]).append(EOL);
+            s.append("   Sensor ").append(i).append(":     ").append(analogInputs[i]).append(EOL);
             }
+         s.append("   Motor Power Enabled: ").append(IS_MOTOR_POWER_ENABLED).append(EOL);
 
          return s.toString();
          }

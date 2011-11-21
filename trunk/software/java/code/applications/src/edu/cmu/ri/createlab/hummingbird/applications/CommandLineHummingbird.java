@@ -9,7 +9,6 @@ import java.util.SortedMap;
 import edu.cmu.ri.createlab.CreateLabConstants;
 import edu.cmu.ri.createlab.device.CreateLabDevicePingFailureEventListener;
 import edu.cmu.ri.createlab.hummingbird.Hummingbird;
-import edu.cmu.ri.createlab.hummingbird.HummingbirdConstants;
 import edu.cmu.ri.createlab.hummingbird.HummingbirdFactory;
 import edu.cmu.ri.createlab.hummingbird.services.HummingbirdService;
 import edu.cmu.ri.createlab.hummingbird.services.HummingbirdServiceFactoryHelper;
@@ -230,9 +229,9 @@ public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
                         {
                         if (isConnected())
                            {
-                           final Integer analogInputId = readInteger("Analog input index [0 or 1]: ");
+                           final Integer analogInputId = readInteger("Analog input index [0 - " + (hummingbird.getHummingbirdProperties().getAnalogInputDeviceCount() - 1) + "]: ");
 
-                           if (analogInputId == null || analogInputId < 0 || analogInputId > 1)
+                           if (analogInputId == null || analogInputId < 0 || analogInputId >= hummingbird.getHummingbirdProperties().getAnalogInputDeviceCount())
                               {
                               println("Invalid analog input index");
                               }
@@ -255,16 +254,18 @@ public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
                         {
                         if (isConnected())
                            {
-                           final Integer motorId1 = readInteger("Motor index [0 or 1]: ");
+                           final Integer motorId1 = readInteger("Motor index [0 - " + (hummingbird.getHummingbirdProperties().getMotorDeviceCount() - 1) + "]: ");
 
-                           if (motorId1 == null || motorId1 < 0 || motorId1 > 1)
+                           if (motorId1 == null || motorId1 < 0 || motorId1 >= hummingbird.getHummingbirdProperties().getMotorDeviceCount())
                               {
                               println("Invalid motor index");
                               }
                            else
                               {
-                              final Integer velocity = readInteger("Velocity [" + HummingbirdConstants.MOTOR_DEVICE_MIN_VELOCITY + " to " + HummingbirdConstants.MOTOR_DEVICE_MAX_VELOCITY + "]: ");
-                              if (velocity == null || velocity < HummingbirdConstants.MOTOR_DEVICE_MIN_VELOCITY || velocity > HummingbirdConstants.MOTOR_DEVICE_MAX_VELOCITY)
+                              final int minVelocity = hummingbird.getHummingbirdProperties().getMotorDeviceMinVelocity();
+                              final int maxVelocity = hummingbird.getHummingbirdProperties().getMotorDeviceMaxVelocity();
+                              final Integer velocity = readInteger("Velocity [" + minVelocity + " to " + maxVelocity + "]: ");
+                              if (velocity == null || velocity < minVelocity || velocity > maxVelocity)
                                  {
                                  println("Invalid velocity");
                                  }
@@ -288,16 +289,19 @@ public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
                         {
                         if (isConnected())
                            {
-                           final Integer motorId = readInteger("Vibration motor index [0 or 1]: ");
+                           final Integer motorId = readInteger("Vibration motor index [0 - " + (hummingbird.getHummingbirdProperties().getVibrationMotorDeviceCount() - 1) + "]: ");
 
-                           if (motorId == null || motorId < 0 || motorId > 1)
+                           if (motorId == null || motorId < 0 || motorId >= hummingbird.getHummingbirdProperties().getVibrationMotorDeviceCount())
                               {
                               println("Invalid motor index");
                               }
                            else
                               {
-                              final Integer speed = readInteger("Speed [" + HummingbirdConstants.VIBRATION_MOTOR_DEVICE_MIN_SPEED + " - " + HummingbirdConstants.VIBRATION_MOTOR_DEVICE_MAX_SPEED + "]: ");
-                              if (speed == null || speed < HummingbirdConstants.VIBRATION_MOTOR_DEVICE_MIN_SPEED || speed > HummingbirdConstants.VIBRATION_MOTOR_DEVICE_MAX_SPEED)
+                              final int minSpeed = hummingbird.getHummingbirdProperties().getVibrationMotorDeviceMinSpeed();
+                              final int maxSpeed = hummingbird.getHummingbirdProperties().getVibrationMotorDeviceMaxSpeed();
+
+                              final Integer speed = readInteger("Speed [" + minSpeed + " - " + maxSpeed + "]: ");
+                              if (speed == null || speed < minSpeed || speed > maxSpeed)
                                  {
                                  println("Invalid speed");
                                  }
@@ -321,16 +325,18 @@ public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
                         {
                         if (isConnected())
                            {
-                           final Integer servoId = readInteger("Servo index [0 - 3]: ");
+                           final Integer servoId = readInteger("Servo index [0 - " + (hummingbird.getHummingbirdProperties().getSimpleServoDeviceCount() - 1) + "]: ");
 
-                           if (servoId == null || servoId < 0 || servoId > 3)
+                           if (servoId == null || servoId < 0 || servoId >= hummingbird.getHummingbirdProperties().getSimpleServoDeviceCount())
                               {
                               println("Invalid servo index");
                               }
                            else
                               {
-                              final Integer position = readInteger("Position [" + HummingbirdConstants.SIMPLE_SERVO_DEVICE_MIN_POSITION + " - " + HummingbirdConstants.SIMPLE_SERVO_DEVICE_MAX_POSITION + "]: ");
-                              if (position == null || position < HummingbirdConstants.SIMPLE_SERVO_DEVICE_MIN_POSITION || position > HummingbirdConstants.SIMPLE_SERVO_DEVICE_MAX_POSITION)
+                              final int minPosition = hummingbird.getHummingbirdProperties().getSimpleServoDeviceMinPosition();
+                              final int maxPosition = hummingbird.getHummingbirdProperties().getSimpleServoDeviceMaxPosition();
+                              final Integer position = readInteger("Position [" + minPosition + " - " + maxPosition + "]: ");
+                              if (position == null || position < minPosition || position > maxPosition)
                                  {
                                  println("Invalid position");
                                  }
@@ -354,22 +360,24 @@ public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
                         {
                         if (isConnected())
                            {
-                           final Integer ledId1 = readInteger("LED index [0 - 3]: ");
+                           final Integer ledId = readInteger("LED index [0 - " + (hummingbird.getHummingbirdProperties().getSimpleLedDeviceCount() - 1) + "]: ");
 
-                           if (ledId1 == null || ledId1 < 0 || ledId1 > 3)
+                           if (ledId == null || ledId < 0 || ledId >= hummingbird.getHummingbirdProperties().getSimpleLedDeviceCount())
                               {
                               println("Invalid LED index");
                               }
                            else
                               {
-                              final Integer intensity = readInteger("Intensity [" + HummingbirdConstants.SIMPLE_LED_DEVICE_MIN_INTENSITY + " - " + HummingbirdConstants.SIMPLE_LED_DEVICE_MAX_INTENSITY + "]: ");
-                              if (intensity == null || intensity < HummingbirdConstants.SIMPLE_LED_DEVICE_MIN_INTENSITY || intensity > HummingbirdConstants.SIMPLE_LED_DEVICE_MAX_INTENSITY)
+                              final int minIntensity = hummingbird.getHummingbirdProperties().getSimpleLedDeviceMinIntensity();
+                              final int maxIntensity = hummingbird.getHummingbirdProperties().getSimpleLedDeviceMaxIntensity();
+                              final Integer intensity = readInteger("Intensity [" + minIntensity + " - " + maxIntensity + "]: ");
+                              if (intensity == null || intensity < minIntensity || intensity > maxIntensity)
                                  {
                                  println("Invalid intensity");
                                  }
                               else
                                  {
-                                 setLED(ledId1, intensity);
+                                 setLED(ledId, intensity);
                                  }
                               }
                            }
@@ -387,29 +395,31 @@ public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
                         {
                         if (isConnected())
                            {
-                           final Integer ledId = readInteger("Full-color LED index [0 or 1]: ");
+                           final Integer ledId = readInteger("Full-color LED index [0 - " + (hummingbird.getHummingbirdProperties().getFullColorLedDeviceCount() - 1) + "]: ");
 
-                           if (ledId == null || ledId < 0 || ledId > 1)
+                           if (ledId == null || ledId < 0 || ledId >= hummingbird.getHummingbirdProperties().getFullColorLedDeviceCount())
                               {
                               println("Invalid full-color LED index");
                               }
                            else
                               {
+                              final int minIntensity = hummingbird.getHummingbirdProperties().getFullColorLedDeviceMinIntensity();
+                              final int maxIntensity = hummingbird.getHummingbirdProperties().getFullColorLedDeviceMaxIntensity();
 
-                              final Integer r = readInteger("Red Intensity   [" + HummingbirdConstants.FULL_COLOR_LED_DEVICE_MIN_INTENSITY + " - " + HummingbirdConstants.FULL_COLOR_LED_DEVICE_MAX_INTENSITY + "]: ");
-                              if (r == null || r < HummingbirdConstants.FULL_COLOR_LED_DEVICE_MIN_INTENSITY || r > HummingbirdConstants.FULL_COLOR_LED_DEVICE_MAX_INTENSITY)
+                              final Integer r = readInteger("Red Intensity   [" + minIntensity + " - " + maxIntensity + "]: ");
+                              if (r == null || r < minIntensity || r > maxIntensity)
                                  {
                                  println("Invalid red intensity");
                                  return;
                                  }
-                              final Integer g = readInteger("Green Intensity [" + HummingbirdConstants.FULL_COLOR_LED_DEVICE_MIN_INTENSITY + " - " + HummingbirdConstants.FULL_COLOR_LED_DEVICE_MAX_INTENSITY + "]: ");
-                              if (g == null || g < HummingbirdConstants.FULL_COLOR_LED_DEVICE_MIN_INTENSITY || g > HummingbirdConstants.FULL_COLOR_LED_DEVICE_MAX_INTENSITY)
+                              final Integer g = readInteger("Green Intensity [" + minIntensity + " - " + maxIntensity + "]: ");
+                              if (g == null || g < minIntensity || g > maxIntensity)
                                  {
                                  println("Invalid green intensity");
                                  return;
                                  }
-                              final Integer b = readInteger("Blue Intensity  [" + HummingbirdConstants.FULL_COLOR_LED_DEVICE_MIN_INTENSITY + " - " + HummingbirdConstants.FULL_COLOR_LED_DEVICE_MAX_INTENSITY + "]: ");
-                              if (b == null || b < HummingbirdConstants.FULL_COLOR_LED_DEVICE_MIN_INTENSITY || b > HummingbirdConstants.FULL_COLOR_LED_DEVICE_MAX_INTENSITY)
+                              final Integer b = readInteger("Blue Intensity  [" + minIntensity + " - " + maxIntensity + "]: ");
+                              if (b == null || b < minIntensity || b > maxIntensity)
                                  {
                                  println("Invalid blue intensity");
                                  return;
@@ -433,19 +443,19 @@ public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
                         if (isConnected())
                            {
                            final Integer freq = readInteger("Frequency: ");
-                           if (freq == null || freq < HummingbirdConstants.AUDIO_DEVICE_MIN_FREQUENCY || freq > HummingbirdConstants.AUDIO_DEVICE_MAX_FREQUENCY)
+                           if (freq == null || freq < hummingbird.getHummingbirdProperties().getAudioDeviceMinFrequency() || freq > hummingbird.getHummingbirdProperties().getAudioDeviceMaxFrequency())
                               {
                               println("Invalid frequency");
                               return;
                               }
                            final Integer amp = readInteger("Amplitude: ");
-                           if (amp == null || amp < HummingbirdConstants.AUDIO_DEVICE_MIN_AMPLITUDE || amp > HummingbirdConstants.AUDIO_DEVICE_MAX_AMPLITUDE)
+                           if (amp == null || amp < hummingbird.getHummingbirdProperties().getAudioDeviceMinAmplitude() || amp > hummingbird.getHummingbirdProperties().getAudioDeviceMaxAmplitude())
                               {
                               println("Invalid amplitude");
                               return;
                               }
                            final Integer dur = readInteger("Duration (ms): ");
-                           if (dur == null || dur < HummingbirdConstants.AUDIO_DEVICE_MIN_DURATION || dur > HummingbirdConstants.AUDIO_DEVICE_MAX_DURATION)
+                           if (dur == null || dur < hummingbird.getHummingbirdProperties().getAudioDeviceMinDuration() || dur > hummingbird.getHummingbirdProperties().getAudioDeviceMaxDuration())
                               {
                               println("Invalid duration");
                               return;
@@ -499,6 +509,39 @@ public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
                         }
                      });
 
+      registerAction("z",
+                     new Runnable()
+                     {
+                     public void run()
+                        {
+                        if (isConnected())
+                           {
+                           println("Hardware version: " + hummingbird.getHardwareVersion().getMajorMinorRevision());
+                           println("Firmware version: " + hummingbird.getFirmwareVersion().getMajorMinorRevision());
+                           }
+                        else
+                           {
+                           println("You must be connected to a hummingbird first.");
+                           }
+                        }
+                     });
+
+      registerAction("w",
+                     new Runnable()
+                     {
+                     public void run()
+                        {
+                        if (isConnected())
+                           {
+                           println("Motor/Servo power enabled: " + hummingbird.isMotorPowerEnabled());
+                           }
+                        else
+                           {
+                           println("You must be connected to a hummingbird first.");
+                           }
+                        }
+                     });
+
       registerAction("x",
                      new Runnable()
                      {
@@ -538,6 +581,8 @@ public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
       println("f         Control a full-color LED");
       println("t         Play a tone");
       println("p         Play a sound clip");
+      println("z         Display Hummingbird hardware and firmware version info");
+      println("w         Returns whether motor/servo power is enabled");
       println("");
       println("x         Turn all motors and LEDs off");
       println("q         Quit");

@@ -1,6 +1,5 @@
 package edu.cmu.ri.createlab.hummingbird;
 
-import java.awt.Color;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.concurrent.Executors;
@@ -60,91 +59,6 @@ abstract class BaseHummingbirdProxy implements Hummingbird, CommandExecutionFail
          createLabDevicePingFailureEventListeners.remove(listener);
          }
       }
-
-   @Override
-   public final int[] setMotorVelocities(final boolean[] mask, final int[] velocities)
-      {
-      if (setMotorVelocitiesAndReturnStatus(mask, velocities))
-         {
-         final HummingbirdState state = getState();
-         if (state != null)
-            {
-            return state.getMotorVelocities();
-            }
-         }
-
-      return null;
-      }
-
-   protected abstract boolean setMotorVelocitiesAndReturnStatus(final boolean[] mask, final int[] velocities);
-
-   @Override
-   public final int[] setVibrationMotorSpeeds(final boolean[] mask, final int[] speeds)
-      {
-      if (setVibrationMotorSpeedsAndReturnStatus(mask, speeds))
-         {
-         final HummingbirdState state = getState();
-         if (state != null)
-            {
-            return state.getVibrationMotorSpeeds();
-            }
-         }
-
-      return null;
-      }
-
-   protected abstract boolean setVibrationMotorSpeedsAndReturnStatus(final boolean[] mask, final int[] speeds);
-
-   @Override
-   public final int[] setServoPositions(final boolean[] mask, final int[] positions)
-      {
-      if (setServoPositionsAndReturnStatus(mask, positions))
-         {
-         final HummingbirdState state = getState();
-         if (state != null)
-            {
-            return state.getServoPositions();
-            }
-         }
-
-      return null;
-      }
-
-   protected abstract boolean setServoPositionsAndReturnStatus(final boolean[] mask, final int[] positions);
-
-   @Override
-   public final int[] setLEDs(final boolean[] mask, final int[] intensities)
-      {
-      if (setLEDsAndReturnStatus(mask, intensities))
-         {
-         final HummingbirdState state = getState();
-         if (state != null)
-            {
-            return state.getLedIntensities();
-            }
-         }
-
-      return null;
-      }
-
-   protected abstract boolean setLEDsAndReturnStatus(final boolean[] mask, final int[] intensities);
-
-   @Override
-   public final Color[] setFullColorLEDs(final boolean[] mask, final Color[] colors)
-      {
-      if (setFullColorLEDsAndReturnStatus(mask, colors))
-         {
-         final HummingbirdState state = getState();
-         if (state != null)
-            {
-            return state.getFullColorLEDs();
-            }
-         }
-
-      return null;
-      }
-
-   protected abstract boolean setFullColorLEDsAndReturnStatus(final boolean[] mask, final Color[] colors);
 
    @Override
    public final void playTone(final int frequency, final int amplitude, final int duration)

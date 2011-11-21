@@ -1,7 +1,7 @@
 package edu.cmu.ri.createlab.hummingbird.services;
 
 import edu.cmu.ri.createlab.hummingbird.Hummingbird;
-import edu.cmu.ri.createlab.hummingbird.HummingbirdConstants;
+import edu.cmu.ri.createlab.hummingbird.HummingbirdProperties;
 import edu.cmu.ri.createlab.terk.TerkConstants;
 import edu.cmu.ri.createlab.terk.properties.BasicPropertyManager;
 import edu.cmu.ri.createlab.terk.properties.PropertyManager;
@@ -15,15 +15,16 @@ final class SimpleLEDServiceImpl extends BaseSimpleLEDServiceImpl
    {
    static SimpleLEDServiceImpl create(final Hummingbird hummingbird)
       {
-      final BasicPropertyManager basicPropertyManager = new BasicPropertyManager();
+      final HummingbirdProperties hummingbirdProperties = hummingbird.getHummingbirdProperties();
 
-      basicPropertyManager.setReadOnlyProperty(TerkConstants.PropertyKeys.DEVICE_COUNT, HummingbirdConstants.SIMPLE_LED_DEVICE_COUNT);
-      basicPropertyManager.setReadOnlyProperty(SimpleLEDService.PROPERTY_NAME_MIN_INTENSITY, HummingbirdConstants.SIMPLE_LED_DEVICE_MIN_INTENSITY);
-      basicPropertyManager.setReadOnlyProperty(SimpleLEDService.PROPERTY_NAME_MAX_INTENSITY, HummingbirdConstants.SIMPLE_LED_DEVICE_MAX_INTENSITY);
+      final BasicPropertyManager basicPropertyManager = new BasicPropertyManager();
+      basicPropertyManager.setReadOnlyProperty(TerkConstants.PropertyKeys.DEVICE_COUNT, hummingbirdProperties.getSimpleLedDeviceCount());
+      basicPropertyManager.setReadOnlyProperty(SimpleLEDService.PROPERTY_NAME_MIN_INTENSITY, hummingbirdProperties.getSimpleLedDeviceMinIntensity());
+      basicPropertyManager.setReadOnlyProperty(SimpleLEDService.PROPERTY_NAME_MAX_INTENSITY, hummingbirdProperties.getSimpleLedDeviceMaxIntensity());
 
       return new SimpleLEDServiceImpl(hummingbird,
                                       basicPropertyManager,
-                                      HummingbirdConstants.SIMPLE_LED_DEVICE_COUNT);
+                                      hummingbirdProperties.getSimpleLedDeviceCount());
       }
 
    private final Hummingbird hummingbird;

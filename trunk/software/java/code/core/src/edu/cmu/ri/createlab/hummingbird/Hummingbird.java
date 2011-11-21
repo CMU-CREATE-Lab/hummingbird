@@ -8,6 +8,13 @@ import edu.cmu.ri.createlab.device.CreateLabDeviceProxy;
  */
 public interface Hummingbird extends CreateLabDeviceProxy
    {
+   /** Returns the {@link HummingbirdProperties} for this hummingbird. */
+   HummingbirdProperties getHummingbirdProperties();
+
+   HummingbirdVersionNumber getHardwareVersion();
+
+   HummingbirdVersionNumber getFirmwareVersion();
+
    /**
     * Gets the hummingbird's state.  Returns <code>null</code> if an error occurred while getting the state.
     */
@@ -16,9 +23,11 @@ public interface Hummingbird extends CreateLabDeviceProxy
    /**
     * Returns the value of the given port id; returns <code>-1</code> if an error occurred while trying to read the value.
     *
-    * @throws IllegalArgumentException if the <code>analogInputPortId</code> specifies an invalid port
     */
    Integer getAnalogInputValue(int analogInputPortId);
+
+   /** Returns <code>true</code> if motor power is enabled; <code>false</code> otherwise. */
+   boolean isMotorPowerEnabled();
 
    /**
     * Sets the motor specified by the given <code>motorId</code> to the given (signed) <code>velocity</code>.  Returns
@@ -135,5 +144,7 @@ public interface Hummingbird extends CreateLabDeviceProxy
       int[] getVibrationMotorSpeeds();
 
       int[] getAnalogInputValues();
+
+      boolean isMotorPowerEnabled();
       }
    }

@@ -2,7 +2,7 @@ package edu.cmu.ri.createlab.hummingbird.commands;
 
 import java.util.HashSet;
 import java.util.Set;
-import edu.cmu.ri.createlab.hummingbird.HummingbirdConstants;
+import edu.cmu.ri.createlab.hummingbird.HummingbirdProperties;
 import edu.cmu.ri.createlab.util.ByteUtils;
 
 /**
@@ -17,18 +17,32 @@ public final class ServoCommandStrategyHelper extends BaseCommandStrategyHelper
 
    private final byte[] command;
 
-   public ServoCommandStrategyHelper(final int servoId, final int position)
+   private final int minPosition;
+   private final int maxPosition;
+
+   public ServoCommandStrategyHelper(final int servoId, final int position, final HummingbirdProperties hummingbirdProperties)
       {
+      this.minPosition = hummingbirdProperties.getSimpleServoDeviceMinPosition();
+      this.maxPosition = hummingbirdProperties.getSimpleServoDeviceMaxPosition();
+
+      if (servoId < 0 || servoId >= hummingbirdProperties.getSimpleServoDeviceCount())
+         {
+         throw new IllegalArgumentException("Invalid servo index");
+         }
+
       this.command = new byte[]{COMMAND_PREFIX,
                                 convertDeviceIndex((servoId)),
-                                ByteUtils.intToUnsignedByte(position)};
+                                cleanPosition(position)};
       }
 
-   public ServoCommandStrategyHelper(final boolean[] mask, final int[] positions)
+   public ServoCommandStrategyHelper(final boolean[] mask, final int[] positions, final HummingbirdProperties hummingbirdProperties)
       {
+      this.minPosition = hummingbirdProperties.getSimpleServoDeviceMinPosition();
+      this.maxPosition = hummingbirdProperties.getSimpleServoDeviceMaxPosition();
+
       // figure out which ids are masked on
       final Set<Integer> maskedIndeces = new HashSet<Integer>();
-      final int numIndecesToCheck = Math.min(Math.min(mask.length, positions.length), HummingbirdConstants.SIMPLE_SERVO_DEVICE_COUNT);
+      final int numIndecesToCheck = Math.min(Math.min(mask.length, positions.length), hummingbirdProperties.getSimpleServoDeviceCount());
       for (int i = 0; i < numIndecesToCheck; i++)
          {
          if (mask[i])
@@ -44,9 +58,15 @@ public final class ServoCommandStrategyHelper extends BaseCommandStrategyHelper
          {
          this.command[i * BYTES_PER_COMMAND] = COMMAND_PREFIX;
          this.command[i * BYTES_PER_COMMAND + 1] = convertDeviceIndex((index));
-         this.command[i * BYTES_PER_COMMAND + 2] = ByteUtils.intToUnsignedByte(Math.abs(positions[index]));
+         this.command[i * BYTES_PER_COMMAND + 2] = cleanPosition(Math.abs(positions[index]));
          i++;
          }
+      }
+
+   private byte cleanPosition(final int rawPosition)
+      {
+      // clamp the position to the allowed range
+      return ByteUtils.intToUnsignedByte(Math.min(Math.max(rawPosition, minPosition), maxPosition));
       }
 
    public byte[] getCommand()

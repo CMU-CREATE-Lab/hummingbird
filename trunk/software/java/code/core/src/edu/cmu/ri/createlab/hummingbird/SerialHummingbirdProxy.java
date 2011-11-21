@@ -17,12 +17,7 @@ import edu.cmu.ri.createlab.serial.CreateLabSerialDeviceNoReturnValueCommandStra
 import edu.cmu.ri.createlab.serial.SerialDeviceCommandExecutionQueue;
 import edu.cmu.ri.createlab.serial.SerialDeviceNoReturnValueCommandExecutor;
 import edu.cmu.ri.createlab.serial.SerialDeviceReturnValueCommandExecutor;
-import edu.cmu.ri.createlab.serial.config.BaudRate;
-import edu.cmu.ri.createlab.serial.config.CharacterSize;
-import edu.cmu.ri.createlab.serial.config.FlowControl;
-import edu.cmu.ri.createlab.serial.config.Parity;
 import edu.cmu.ri.createlab.serial.config.SerialIOConfiguration;
-import edu.cmu.ri.createlab.serial.config.StopBits;
 import edu.cmu.ri.createlab.util.commandexecution.CommandResponse;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -52,16 +47,16 @@ final class SerialHummingbirdProxy extends BaseHummingbirdProxy
 
       // create the serial port configuration
       final SerialIOConfiguration config = new SerialIOConfiguration(serialPortName,
-                                                                     BaudRate.BAUD_19200,
-                                                                     CharacterSize.EIGHT,
-                                                                     Parity.NONE,
-                                                                     StopBits.ONE,
-                                                                     FlowControl.NONE);
+                                                                     SerialHummingbirdProperties.SerialConfiguration.BAUD_RATE,
+                                                                     SerialHummingbirdProperties.SerialConfiguration.CHARACTER_SIZE,
+                                                                     SerialHummingbirdProperties.SerialConfiguration.PARITY,
+                                                                     SerialHummingbirdProperties.SerialConfiguration.STOP_BITS,
+                                                                     SerialHummingbirdProperties.SerialConfiguration.FLOW_CONTROL);
 
       try
          {
          // create the serial port command queue
-         final SerialDeviceCommandExecutionQueue commandQueue = SerialDeviceCommandExecutionQueue.create(HummingbirdConstants.DEVICE_COMMON_NAME, config);
+         final SerialDeviceCommandExecutionQueue commandQueue = SerialDeviceCommandExecutionQueue.create(SerialHummingbirdProperties.getInstance().getDeviceCommonName(), config);
 
          // see whether its creation was successful
          if (commandQueue == null)
@@ -106,12 +101,14 @@ final class SerialHummingbirdProxy extends BaseHummingbirdProxy
       return null;
       }
 
+   private final HummingbirdProperties hummingbirdProperties = SerialHummingbirdProperties.getInstance();
+
    private final SerialDeviceCommandExecutionQueue commandQueue;
    private final String serialPortName;
 
    private final CreateLabSerialDeviceNoReturnValueCommandStrategy disconnectCommandStrategy = new DisconnectCommandStrategy();
    private final Map<Integer, GetAnalogInputCommandStrategy> analogInputCommandStategyMap = new HashMap<Integer, GetAnalogInputCommandStrategy>();
-   private final GetStateCommandStrategy getStateCommandStrategy = new GetStateCommandStrategy();
+   private final GetStateCommandStrategy getStateCommandStrategy = new GetStateCommandStrategy(hummingbirdProperties);
    private final EmergencyStopCommandStrategy emergencyStopCommandStrategy = new EmergencyStopCommandStrategy();
 
    private final SerialDeviceNoReturnValueCommandExecutor noReturnValueCommandExecutor;
@@ -128,9 +125,9 @@ final class SerialHummingbirdProxy extends BaseHummingbirdProxy
       hummingbirdStateReturnValueCommandExecutor = new SerialDeviceReturnValueCommandExecutor<HummingbirdState>(commandQueue, this);
 
       // initialize the analog input command strategy map
-      for (int i = 0; i < HummingbirdConstants.ANALOG_INPUT_DEVICE_COUNT; i++)
+      for (int i = 0; i < hummingbirdProperties.getAnalogInputDeviceCount(); i++)
          {
-         analogInputCommandStategyMap.put(i, new GetAnalogInputCommandStrategy(i));
+         analogInputCommandStategyMap.put(i, new GetAnalogInputCommandStrategy(i, hummingbirdProperties));
          }
       }
 
@@ -138,6 +135,25 @@ final class SerialHummingbirdProxy extends BaseHummingbirdProxy
    public String getPortName()
       {
       return serialPortName;
+      }
+
+   /** Returns the {@link HummingbirdProperties} for this hummingbird. */
+   @Override
+   public HummingbirdProperties getHummingbirdProperties()
+      {
+      return hummingbirdProperties;
+      }
+
+   @Override
+   public HummingbirdVersionNumber getHardwareVersion()
+      {
+      return SerialHummingbirdProperties.HARDWARE_VERSION;
+      }
+
+   @Override
+   public HummingbirdVersionNumber getFirmwareVersion()
+      {
+      return SerialHummingbirdProperties.FIRMWARE_VERSION;
       }
 
    @Override
@@ -160,63 +176,113 @@ final class SerialHummingbirdProxy extends BaseHummingbirdProxy
       }
 
    @Override
-   public boolean setMotorVelocity(final int motorId, final int velocity)
+   public boolean isMotorPowerEnabled()
       {
-      return noReturnValueCommandExecutor.execute(new MotorCommandStrategy(motorId, velocity));
+      return true; // always true for serial hummingbirds
       }
 
    @Override
-   protected boolean setMotorVelocitiesAndReturnStatus(final boolean[] mask, final int[] velocities)
+   public boolean setMotorVelocity(final int motorId, final int velocity)
       {
-      return noReturnValueCommandExecutor.execute(new MotorCommandStrategy(mask, velocities));
+      return noReturnValueCommandExecutor.execute(new MotorCommandStrategy(motorId, velocity, hummingbirdProperties));
+      }
+
+   @Override
+   public int[] setMotorVelocities(final boolean[] mask, final int[] velocities)
+      {
+      if (noReturnValueCommandExecutor.execute(new MotorCommandStrategy(mask, velocities, hummingbirdProperties)))
+         {
+         final HummingbirdState state = getState();
+         if (state != null)
+            {
+            return state.getMotorVelocities();
+            }
+         }
+      return null;
       }
 
    @Override
    public boolean setVibrationMotorSpeed(final int motorId, final int speed)
       {
-      return noReturnValueCommandExecutor.execute(new VibrationMotorCommandStrategy(motorId, speed));
+      return noReturnValueCommandExecutor.execute(new VibrationMotorCommandStrategy(motorId, speed, hummingbirdProperties));
       }
 
    @Override
-   protected boolean setVibrationMotorSpeedsAndReturnStatus(final boolean[] mask, final int[] speeds)
+   public int[] setVibrationMotorSpeeds(final boolean[] mask, final int[] speeds)
       {
-      return noReturnValueCommandExecutor.execute(new VibrationMotorCommandStrategy(mask, speeds));
+      if (noReturnValueCommandExecutor.execute(new VibrationMotorCommandStrategy(mask, speeds, hummingbirdProperties)))
+         {
+         final HummingbirdState state = getState();
+         if (state != null)
+            {
+            return state.getVibrationMotorSpeeds();
+            }
+         }
+
+      return null;
       }
 
    @Override
    public boolean setServoPosition(final int servoId, final int position)
       {
-      return noReturnValueCommandExecutor.execute(new ServoCommandStrategy(servoId, position));
+      return noReturnValueCommandExecutor.execute(new ServoCommandStrategy(servoId, position, hummingbirdProperties));
       }
 
    @Override
-   protected boolean setServoPositionsAndReturnStatus(final boolean[] mask, final int[] positions)
+   public int[] setServoPositions(final boolean[] mask, final int[] positions)
       {
-      return noReturnValueCommandExecutor.execute(new ServoCommandStrategy(mask, positions));
+      if (noReturnValueCommandExecutor.execute(new ServoCommandStrategy(mask, positions, hummingbirdProperties)))
+         {
+         final HummingbirdState state = getState();
+         if (state != null)
+            {
+            return state.getServoPositions();
+            }
+         }
+
+      return null;
       }
 
    @Override
    public boolean setLED(final int ledId, final int intensity)
       {
-      return noReturnValueCommandExecutor.execute(new LEDCommandStrategy(ledId, intensity));
+      return noReturnValueCommandExecutor.execute(new LEDCommandStrategy(ledId, intensity, hummingbirdProperties));
       }
 
    @Override
-   protected boolean setLEDsAndReturnStatus(final boolean[] mask, final int[] intensities)
+   public int[] setLEDs(final boolean[] mask, final int[] intensities)
       {
-      return noReturnValueCommandExecutor.execute(new LEDCommandStrategy(mask, intensities));
+      if (noReturnValueCommandExecutor.execute(new LEDCommandStrategy(mask, intensities, hummingbirdProperties)))
+         {
+         final HummingbirdState state = getState();
+         if (state != null)
+            {
+            return state.getLedIntensities();
+            }
+         }
+
+      return null;
       }
 
    @Override
    public boolean setFullColorLED(final int ledId, final int red, final int green, final int blue)
       {
-      return noReturnValueCommandExecutor.execute(new FullColorLEDCommandStrategy(ledId, red, green, blue));
+      return noReturnValueCommandExecutor.execute(new FullColorLEDCommandStrategy(ledId, red, green, blue, hummingbirdProperties));
       }
 
    @Override
-   protected boolean setFullColorLEDsAndReturnStatus(final boolean[] mask, final Color[] colors)
+   public Color[] setFullColorLEDs(final boolean[] mask, final Color[] colors)
       {
-      return noReturnValueCommandExecutor.execute(new FullColorLEDCommandStrategy(mask, colors));
+      if (noReturnValueCommandExecutor.execute(new FullColorLEDCommandStrategy(mask, colors, hummingbirdProperties)))
+         {
+         final HummingbirdState state = getState();
+         if (state != null)
+            {
+            return state.getFullColorLEDs();
+            }
+         }
+
+      return null;
       }
 
    @Override
