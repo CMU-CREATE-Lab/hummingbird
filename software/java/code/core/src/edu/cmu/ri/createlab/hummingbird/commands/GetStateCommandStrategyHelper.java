@@ -206,10 +206,6 @@ public final class GetStateCommandStrategyHelper
 
          final HummingbirdStateImpl that = (HummingbirdStateImpl)o;
 
-         if (IS_MOTOR_POWER_ENABLED != that.IS_MOTOR_POWER_ENABLED)
-            {
-            return false;
-            }
          if (!Arrays.equals(analogInputs, that.analogInputs))
             {
             return false;
