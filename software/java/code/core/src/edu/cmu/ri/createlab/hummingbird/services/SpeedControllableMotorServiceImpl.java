@@ -21,6 +21,7 @@ final class SpeedControllableMotorServiceImpl extends BaseSpeedControllableMotor
       basicPropertyManager.setReadOnlyProperty(TerkConstants.PropertyKeys.DEVICE_COUNT, hummingbirdProperties.getVibrationMotorDeviceCount());
       basicPropertyManager.setReadOnlyProperty(SpeedControllableMotorService.PROPERTY_NAME_MIN_SPEED, hummingbirdProperties.getVibrationMotorDeviceMinSpeed());
       basicPropertyManager.setReadOnlyProperty(SpeedControllableMotorService.PROPERTY_NAME_MAX_SPEED, hummingbirdProperties.getVibrationMotorDeviceMaxSpeed());
+      basicPropertyManager.setReadOnlyProperty(SpeedControllableMotorService.PROPERTY_NAME_MAX_SAFE_SPEED, hummingbirdProperties.getVibrationMotorDeviceMaxSafeSpeed());
 
       return new SpeedControllableMotorServiceImpl(hummingbird,
                                                    basicPropertyManager,

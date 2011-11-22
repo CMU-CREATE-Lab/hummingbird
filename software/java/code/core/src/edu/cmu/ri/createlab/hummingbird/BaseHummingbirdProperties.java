@@ -216,7 +216,6 @@ abstract class BaseHummingbirdProperties implements HummingbirdProperties
       }
 
    @Override
-   // TODO: start using this--see the "Known Bugs" section of the Hummingbird HID Protocol document
    public final int getVibrationMotorDeviceMaxSafeSpeed()
       {
       return VIBRATION_MOTOR_DEVICE_MAX_SAFE_SPEED;
