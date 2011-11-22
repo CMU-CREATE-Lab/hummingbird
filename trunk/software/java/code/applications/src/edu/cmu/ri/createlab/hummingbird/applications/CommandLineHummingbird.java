@@ -299,8 +299,9 @@ public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
                               {
                               final int minSpeed = hummingbird.getHummingbirdProperties().getVibrationMotorDeviceMinSpeed();
                               final int maxSpeed = hummingbird.getHummingbirdProperties().getVibrationMotorDeviceMaxSpeed();
+                              final int maxSafeSpeed = hummingbird.getHummingbirdProperties().getVibrationMotorDeviceMaxSafeSpeed();
 
-                              final Integer speed = readInteger("Speed [" + minSpeed + " - " + maxSpeed + "]: ");
+                              final Integer speed = readInteger("Speed [" + minSpeed + " - " + maxSpeed + "], max safe speed is " + maxSafeSpeed + ": ");
                               if (speed == null || speed < minSpeed || speed > maxSpeed)
                                  {
                                  println("Invalid speed");
