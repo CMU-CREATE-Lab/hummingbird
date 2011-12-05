@@ -22,7 +22,7 @@ final class HummingbirdServiceImpl extends BaseDeviceControllingService implemen
 
       final BasicPropertyManager basicPropertyManager = new BasicPropertyManager();
       basicPropertyManager.setReadOnlyProperty(TerkConstants.PropertyKeys.DEVICE_COUNT, hummingbirdProperties.getHummingbirdDeviceCount());
-      basicPropertyManager.setReadOnlyProperty(TerkConstants.PropertyKeys.HARDWARE_TYPE, hummingbirdProperties.getHardwareType());
+      basicPropertyManager.setReadOnlyProperty(TerkConstants.PropertyKeys.HARDWARE_TYPE, hummingbirdProperties.getHardwareType().getName());
       basicPropertyManager.setReadOnlyProperty(TerkConstants.PropertyKeys.HARDWARE_VERSION, hardwareVersion.getMajorMinorRevision());
       basicPropertyManager.setReadOnlyProperty(TerkConstants.PropertyKeys.HARDWARE_VERSION_MAJOR, hardwareVersion.getMajorVersion());
       basicPropertyManager.setReadOnlyProperty(TerkConstants.PropertyKeys.HARDWARE_VERSION_MINOR, hardwareVersion.getMinorVersion());

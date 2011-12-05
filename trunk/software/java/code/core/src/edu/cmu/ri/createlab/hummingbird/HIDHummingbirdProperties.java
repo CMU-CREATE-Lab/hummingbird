@@ -11,7 +11,7 @@ final class HIDHummingbirdProperties extends BaseHummingbirdProperties
 
    private static final String DEVICE_COMMON_NAME = "HID Hummingbird";
 
-   private static final String HARDWARE_TYPE = DEVICE_COMMON_NAME;
+   private static final HummingbirdHardwareType HARDWARE_TYPE = HummingbirdHardwareType.HID;
 
    private static final int ANALOG_INPUT_DEVICE_COUNT = 4;
 
@@ -52,7 +52,7 @@ final class HIDHummingbirdProperties extends BaseHummingbirdProperties
       }
 
    @Override
-   public String getHardwareType()
+   public HummingbirdHardwareType getHardwareType()
       {
       return HARDWARE_TYPE;
       }
