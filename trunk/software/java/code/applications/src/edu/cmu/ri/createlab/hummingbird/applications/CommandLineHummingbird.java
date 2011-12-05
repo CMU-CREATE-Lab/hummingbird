@@ -23,12 +23,16 @@ import edu.cmu.ri.createlab.terk.services.motor.SpeedControllableMotorService;
 import edu.cmu.ri.createlab.terk.services.motor.VelocityControllableMotorService;
 import edu.cmu.ri.createlab.terk.services.servo.SimpleServoService;
 import edu.cmu.ri.createlab.util.FileUtils;
+import org.apache.log4j.Logger;
 
 /**
  * @author Chris Bartley (bartley@cmu.edu)
  */
 public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
    {
+   private static final Logger LOG = Logger.getLogger(CommandLineHummingbird.class);
+   private static final int THIRTY_SECONDS_IN_MILLIS = 30000;
+
    public static void main(final String[] args)
       {
       final BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
@@ -239,6 +243,30 @@ public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
                               {
                               println(getAnalogInputValue(analogInputId));
                               }
+                           }
+                        else
+                           {
+                           println("You must be connected to a hummingbird first.");
+                           }
+                        }
+                     });
+
+      registerAction("A",
+                     new Runnable()
+                     {
+                     public void run()
+                        {
+                        if (isConnected())
+                           {
+                           poll(
+                                 new Runnable()
+                                 {
+                                 public void run()
+                                    {
+                                    final int[] analogInputValues = getAnalogInputValues();
+                                    println("Analog inputs: " + arrayToFormattedString(analogInputValues));
+                                    }
+                                 });
                            }
                         else
                            {
@@ -575,6 +603,7 @@ public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
       println("");
       println("g         Get the hummingbird's current state");
       println("a         Get the value of one of the analog inputs");
+      println("A         Continuously poll the analog inputs for 30 seconds");
       println("m         Control a motor");
       println("v         Control a vibration motor");
       println("s         Control a servo motor");
@@ -589,6 +618,37 @@ public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
       println("q         Quit");
       println("");
       println("--------------------------------------------");
+      }
+
+   private void poll(final Runnable strategy)
+      {
+      final long startTime = System.currentTimeMillis();
+      while (isConnected() && System.currentTimeMillis() - startTime < THIRTY_SECONDS_IN_MILLIS)
+         {
+         strategy.run();
+         try
+            {
+            Thread.sleep(30);
+            }
+         catch (InterruptedException e)
+            {
+            LOG.error("InterruptedException while sleeping", e);
+            }
+         }
+      }
+
+   private static String arrayToFormattedString(final int[] a)
+      {
+      if (a != null && a.length > 0)
+         {
+         final StringBuilder s = new StringBuilder();
+         for (final int i : a)
+            {
+            s.append(String.format("%5d", i));
+            }
+         return s.toString();
+         }
+      return "";
       }
 
    protected final boolean isConnected()
@@ -614,6 +674,11 @@ public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
    protected int getAnalogInputValue(final int analogInputId)
       {
       return ((AnalogInputsService)serviceManager.getServiceByTypeId(AnalogInputsService.TYPE_ID)).getAnalogInputValue(analogInputId);
+      }
+
+   protected int[] getAnalogInputValues()
+      {
+      return ((AnalogInputsService)serviceManager.getServiceByTypeId(AnalogInputsService.TYPE_ID)).getAnalogInputValues();
       }
 
    protected void setMotorVelocity(final int motorId, final int velocity)
