@@ -545,8 +545,18 @@ public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
                         {
                         if (isConnected())
                            {
-                           println("Hardware version: " + hummingbird.getHardwareVersion().getMajorMinorRevision());
-                           println("Firmware version: " + hummingbird.getFirmwareVersion().getMajorMinorRevision());
+                           println("Hardware common name:  " + hummingbird.getHummingbirdProperties().getDeviceCommonName());
+                           println("Hardware type:         " + hummingbird.getHummingbirdProperties().getHardwareType());
+                           println("Hardware version:      " + hummingbird.getHardwareVersion().getMajorMinorRevision());
+                           println("Firmware version:      " + hummingbird.getFirmwareVersion().getMajorMinorRevision());
+                           println("Device counts:");
+                           println("   Analog Inputs:      " + hummingbird.getHummingbirdProperties().getAnalogInputDeviceCount());
+                           println("   Audio Outputs:      " + hummingbird.getHummingbirdProperties().getAudioDeviceCount());
+                           println("   LEDs:               " + hummingbird.getHummingbirdProperties().getSimpleLedDeviceCount());
+                           println("   Full-color LEDs:    " + hummingbird.getHummingbirdProperties().getFullColorLedDeviceCount());
+                           println("   Motors:             " + hummingbird.getHummingbirdProperties().getMotorDeviceCount());
+                           println("   Servos:             " + hummingbird.getHummingbirdProperties().getSimpleServoDeviceCount());
+                           println("   Vibration Motors:   " + hummingbird.getHummingbirdProperties().getVibrationMotorDeviceCount());
                            }
                         else
                            {
@@ -611,7 +621,7 @@ public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
       println("f         Control a full-color LED");
       println("t         Play a tone");
       println("p         Play a sound clip");
-      println("z         Display Hummingbird hardware and firmware version info");
+      println("z         Display Hummingbird hardware and firmware info");
       println("w         Returns whether motor/servo power is enabled");
       println("");
       println("x         Turn all motors and LEDs off");
