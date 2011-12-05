@@ -77,9 +77,9 @@ public final class GetState2CommandStrategy extends CreateLabHIDReturnValueComma
          {
          // read state positions for motors 1 and 2 (first byte is direction, second is speed)
          motors = new int[hummingbirdProperties.getMotorDeviceCount()];
-         this.motors[0] = computeMotorVelocity(ByteUtils.unsignedByteToInt(state[0]),
+         this.motors[0] = computeMotorVelocity((char)state[0],
                                                ByteUtils.unsignedByteToInt(state[1]));
-         this.motors[1] = computeMotorVelocity(ByteUtils.unsignedByteToInt(state[2]),
+         this.motors[1] = computeMotorVelocity((char)state[2],
                                                ByteUtils.unsignedByteToInt(state[3]));
 
          // read state positions for the vibe motors
@@ -90,10 +90,10 @@ public final class GetState2CommandStrategy extends CreateLabHIDReturnValueComma
             }
          }
 
-      private int computeMotorVelocity(final int direction, final int speed)
+      private int computeMotorVelocity(final char direction, final int speed)
          {
          // convention is that a direction of 0 means negative, 1 means positive
-         final int sign = (direction == 0) ? -1 : 1;
+         final int sign = (direction == '0') ? -1 : 1;
 
          return sign * speed;
          }
