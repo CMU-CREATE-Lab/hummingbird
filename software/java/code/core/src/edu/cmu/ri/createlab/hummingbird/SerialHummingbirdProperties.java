@@ -15,7 +15,7 @@ final class SerialHummingbirdProperties extends BaseHummingbirdProperties
 
    private static final String DEVICE_COMMON_NAME = "Serial Hummingbird";
 
-   private static final String HARDWARE_TYPE = DEVICE_COMMON_NAME;
+   private static final HummingbirdHardwareType HARDWARE_TYPE = HummingbirdHardwareType.SERIAL;
 
    private static final int ANALOG_INPUT_DEVICE_COUNT = 2;
 
@@ -53,7 +53,7 @@ final class SerialHummingbirdProperties extends BaseHummingbirdProperties
       }
 
    @Override
-   public String getHardwareType()
+   public HummingbirdHardwareType getHardwareType()
       {
       return HARDWARE_TYPE;
       }

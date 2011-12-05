@@ -10,7 +10,7 @@ public interface HummingbirdProperties
 
    String getDeviceCommonName();
 
-   String getHardwareType();
+   HummingbirdHardwareType getHardwareType();
 
    /** Returns the number of analog inputs. */
    int getAnalogInputDeviceCount();
