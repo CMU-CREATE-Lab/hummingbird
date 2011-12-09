@@ -1,8 +1,8 @@
 package edu.cmu.ri.createlab.hummingbird.commands;
 
-import java.util.HashSet;
 import java.util.Set;
 import edu.cmu.ri.createlab.hummingbird.HummingbirdProperties;
+import edu.cmu.ri.createlab.hummingbird.HummingbirdUtils;
 import edu.cmu.ri.createlab.util.ByteUtils;
 
 /**
@@ -30,18 +30,10 @@ public final class MotorCommandStrategyHelper extends BaseCommandStrategyHelper
                                 ByteUtils.intToUnsignedByte(Math.abs(velocity))};
       }
 
-   public MotorCommandStrategyHelper(final boolean[] motorMask, final int[] velocities, final HummingbirdProperties hummingbirdProperties)
+   public MotorCommandStrategyHelper(final boolean[] mask, final int[] velocities, final HummingbirdProperties hummingbirdProperties)
       {
       // figure out which ids are masked on
-      final Set<Integer> maskedIndeces = new HashSet<Integer>();
-      final int numIndecesToCheck = Math.min(Math.min(motorMask.length, velocities.length), hummingbirdProperties.getMotorDeviceCount());
-      for (int i = 0; i < numIndecesToCheck; i++)
-         {
-         if (motorMask[i])
-            {
-            maskedIndeces.add(i);
-            }
-         }
+      final Set<Integer> maskedIndeces = HummingbirdUtils.computeMaskedOnIndeces(mask, Math.min(velocities.length, hummingbirdProperties.getMotorDeviceCount()));
 
       // construct the command
       this.command = new byte[maskedIndeces.size() * BYTES_PER_COMMAND];

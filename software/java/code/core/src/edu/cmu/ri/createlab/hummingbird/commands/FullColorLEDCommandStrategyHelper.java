@@ -1,9 +1,9 @@
 package edu.cmu.ri.createlab.hummingbird.commands;
 
 import java.awt.Color;
-import java.util.HashSet;
 import java.util.Set;
 import edu.cmu.ri.createlab.hummingbird.HummingbirdProperties;
+import edu.cmu.ri.createlab.hummingbird.HummingbirdUtils;
 import edu.cmu.ri.createlab.util.ByteUtils;
 
 /**
@@ -45,15 +45,7 @@ public final class FullColorLEDCommandStrategyHelper extends BaseCommandStrategy
       this.maxIntensity = hummingbirdProperties.getFullColorLedDeviceMaxIntensity();
 
       // figure out which ids are masked on
-      final Set<Integer> maskedIndeces = new HashSet<Integer>();
-      final int numIndecesToCheck = Math.min(Math.min(mask.length, colors.length), hummingbirdProperties.getFullColorLedDeviceCount());
-      for (int i = 0; i < numIndecesToCheck; i++)
-         {
-         if (mask[i])
-            {
-            maskedIndeces.add(i);
-            }
-         }
+      final Set<Integer> maskedIndeces = HummingbirdUtils.computeMaskedOnIndeces(mask, Math.min(colors.length, hummingbirdProperties.getFullColorLedDeviceCount()));
 
       // construct the command
       this.command = new byte[maskedIndeces.size() * BYTES_PER_COMMAND];
