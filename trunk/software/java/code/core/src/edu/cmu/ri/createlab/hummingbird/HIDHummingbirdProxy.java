@@ -3,6 +3,7 @@ package edu.cmu.ri.createlab.hummingbird;
 import java.awt.Color;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import edu.cmu.ri.createlab.hummingbird.commands.hid.DisconnectCommandStrategy;
 import edu.cmu.ri.createlab.hummingbird.commands.hid.EmergencyStopCommandStrategy;
 import edu.cmu.ri.createlab.hummingbird.commands.hid.FullColorLEDCommandStrategy;
@@ -239,7 +240,16 @@ final class HIDHummingbirdProxy extends BaseHummingbirdProxy
    @Override
    public int[] setMotorVelocities(final boolean[] mask, final int[] velocities)
       {
-      if (noReturnValueCommandExecutor.execute(new MotorCommandStrategy(mask, velocities, hummingbirdProperties)))
+      // figure out which ids are masked on
+      final Set<Integer> maskedIndeces = HummingbirdUtils.computeMaskedOnIndeces(mask, Math.min(velocities.length, hummingbirdProperties.getMotorDeviceCount()));
+
+      boolean wereAllCommandsSuccessful = true;
+      for (final int index : maskedIndeces)
+         {
+         wereAllCommandsSuccessful = wereAllCommandsSuccessful && setMotorVelocity(index, velocities[index]);
+         }
+
+      if (wereAllCommandsSuccessful)
          {
          final HummingbirdState2 state = hummingbirdState2ReturnValueCommandExecutor.execute(getState2CommandStrategy);
          if (state != null)
@@ -247,6 +257,7 @@ final class HIDHummingbirdProxy extends BaseHummingbirdProxy
             return state.getMotorVelocities();
             }
          }
+
       return null;
       }
 
@@ -259,7 +270,16 @@ final class HIDHummingbirdProxy extends BaseHummingbirdProxy
    @Override
    public int[] setVibrationMotorSpeeds(final boolean[] mask, final int[] speeds)
       {
-      if (noReturnValueCommandExecutor.execute(new VibrationMotorCommandStrategy(mask, speeds, hummingbirdProperties)))
+      // figure out which ids are masked on
+      final Set<Integer> maskedIndeces = HummingbirdUtils.computeMaskedOnIndeces(mask, Math.min(speeds.length, hummingbirdProperties.getVibrationMotorDeviceCount()));
+
+      boolean wereAllCommandsSuccessful = true;
+      for (final int index : maskedIndeces)
+         {
+         wereAllCommandsSuccessful = wereAllCommandsSuccessful && setVibrationMotorSpeed(index, speeds[index]);
+         }
+
+      if (wereAllCommandsSuccessful)
          {
          final HummingbirdState2 state = hummingbirdState2ReturnValueCommandExecutor.execute(getState2CommandStrategy);
          if (state != null)
@@ -280,7 +300,16 @@ final class HIDHummingbirdProxy extends BaseHummingbirdProxy
    @Override
    public int[] setServoPositions(final boolean[] mask, final int[] positions)
       {
-      if (noReturnValueCommandExecutor.execute(new ServoCommandStrategy(mask, positions, hummingbirdProperties)))
+      // figure out which ids are masked on
+      final Set<Integer> maskedIndeces = HummingbirdUtils.computeMaskedOnIndeces(mask, Math.min(positions.length, hummingbirdProperties.getSimpleServoDeviceCount()));
+
+      boolean wereAllCommandsSuccessful = true;
+      for (final int index : maskedIndeces)
+         {
+         wereAllCommandsSuccessful = wereAllCommandsSuccessful && setServoPosition(index, positions[index]);
+         }
+
+      if (wereAllCommandsSuccessful)
          {
          final HummingbirdState1 state = hummingbirdState1ReturnValueCommandExecutor.execute(getState1CommandStrategy);
          if (state != null)
@@ -301,7 +330,16 @@ final class HIDHummingbirdProxy extends BaseHummingbirdProxy
    @Override
    public int[] setLEDs(final boolean[] mask, final int[] intensities)
       {
-      if (noReturnValueCommandExecutor.execute(new LEDCommandStrategy(mask, intensities, hummingbirdProperties)))
+      // figure out which ids are masked on
+      final Set<Integer> maskedIndeces = HummingbirdUtils.computeMaskedOnIndeces(mask, Math.min(intensities.length, hummingbirdProperties.getSimpleLedDeviceCount()));
+
+      boolean wereAllCommandsSuccessful = true;
+      for (final int index : maskedIndeces)
+         {
+         wereAllCommandsSuccessful = wereAllCommandsSuccessful && setLED(index, intensities[index]);
+         }
+
+      if (wereAllCommandsSuccessful)
          {
          // LED state is spread across 2 different states...
          final HummingbirdState0 state0 = hummingbirdState0ReturnValueCommandExecutor.execute(getState0CommandStrategy);
@@ -337,7 +375,20 @@ final class HIDHummingbirdProxy extends BaseHummingbirdProxy
    @Override
    public Color[] setFullColorLEDs(final boolean[] mask, final Color[] colors)
       {
-      if (noReturnValueCommandExecutor.execute(new FullColorLEDCommandStrategy(mask, colors, hummingbirdProperties)))
+      // figure out which ids are masked on
+      final Set<Integer> maskedIndeces = HummingbirdUtils.computeMaskedOnIndeces(mask, Math.min(colors.length, hummingbirdProperties.getFullColorLedDeviceCount()));
+
+      boolean wereAllCommandsSuccessful = true;
+      for (final int index : maskedIndeces)
+         {
+         final Color color = colors[index];
+         if (color != null)
+            {
+            wereAllCommandsSuccessful = wereAllCommandsSuccessful && setFullColorLED(index, color.getRed(), color.getGreen(), color.getBlue());
+            }
+         }
+
+      if (wereAllCommandsSuccessful)
          {
          final HummingbirdState0 state = hummingbirdState0ReturnValueCommandExecutor.execute(getState0CommandStrategy);
          if (state != null)
