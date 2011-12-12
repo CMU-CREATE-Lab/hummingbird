@@ -122,6 +122,12 @@ public interface Hummingbird extends CreateLabDeviceProxy
    /** Plays the sound clip contained in the given <code>byte</code> array. */
    void playClip(byte[] data);
 
+   /** Converts the given text into speech, and returns the resulting WAV sound clip as a byte array. */
+   byte[] getSpeech(final String whatToSay);
+
+   /** Converts the given text into audio and plays it. */
+   void speak(final String whatToSay);
+
    /**
     * Turns off all motors, vibrations motors, LEDs, and full-color LEDs. Returns <code>true</code> if the command
     * succeeded, <code>false</code> otherwise.

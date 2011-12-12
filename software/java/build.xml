@@ -10,6 +10,7 @@
       <pathelement path="${create-lab-commons-audio.jar}"/>
       <pathelement path="${create-lab-commons-device.jar}"/>
       <pathelement path="${create-lab-commons-serial.jar}"/>
+      <pathelement path="${create-lab-commons-speech.jar}"/>
       <pathelement path="${create-lab-commons-usb-hid.jar}"/>
       <pathelement path="${create-lab-commons-util.jar}"/>
       <pathelement path="${create-lab-commons-xml.jar}"/>
@@ -31,9 +32,14 @@
       <pathelement path="${create-lab-commons-audio.jar}"/>
       <pathelement path="${create-lab-commons-device.jar}"/>
       <pathelement path="${create-lab-commons-serial.jar}"/>
+      <pathelement path="${create-lab-commons-speech.jar}"/>
       <pathelement path="${create-lab-commons-usb-hid.jar}"/>
       <pathelement path="${create-lab-commons-util.jar}"/>
       <pathelement path="${create-lab-commons-xml.jar}"/>
+      <pathelement path="${freetts.jar}"/>
+      <pathelement path="${freetts-extra1.jar}"/>
+      <pathelement path="${freetts-extra2.jar}"/>
+      <pathelement path="${freetts-extra3.jar}"/>
       <pathelement path="${jdom.jar}"/>
       <pathelement path="${jna.jar}"/>
       <pathelement path="${jnaerator.jar}"/>
@@ -128,9 +134,14 @@
             <fileset file="${create-lab-commons-audio.jar}"/>
             <fileset file="${create-lab-commons-device.jar}"/>
             <fileset file="${create-lab-commons-serial.jar}"/>
+            <fileset file="${create-lab-commons-speech.jar}"/>
             <fileset file="${create-lab-commons-usb-hid.jar}"/>
             <fileset file="${create-lab-commons-util.jar}"/>
             <fileset file="${create-lab-commons-xml.jar}"/>
+            <fileset file="${freetts.jar}"/>
+            <fileset file="${freetts-extra1.jar}"/>
+            <fileset file="${freetts-extra2.jar}"/>
+            <fileset file="${freetts-extra3.jar}"/>
             <fileset file="${hidapi1.native}"/>
             <fileset file="${hidapi2.native}"/>
             <fileset file="${hidapi3.native}"/>
@@ -169,9 +180,14 @@
             <fileset file="${create-lab-commons-audio.jar}"/>
             <fileset file="${create-lab-commons-device.jar}"/>
             <fileset file="${create-lab-commons-serial.jar}"/>
+            <fileset file="${create-lab-commons-speech.jar}"/>
             <fileset file="${create-lab-commons-usb-hid.jar}"/>
             <fileset file="${create-lab-commons-util.jar}"/>
             <fileset file="${create-lab-commons-xml.jar}"/>
+            <fileset file="${freetts.jar}"/>
+            <fileset file="${freetts-extra1.jar}"/>
+            <fileset file="${freetts-extra2.jar}"/>
+            <fileset file="${freetts-extra3.jar}"/>
             <fileset file="${hidapi1.native}"/>
             <fileset file="${hidapi2.native}"/>
             <fileset file="${hidapi3.native}"/>
@@ -258,6 +274,7 @@
                <include name="**/*.jar"/>
                <include name="**/*.dll"/>
                <include name="**/*.so"/>
+               <include name="**/*.dylib"/>
             </fileset>
          </path>
 
