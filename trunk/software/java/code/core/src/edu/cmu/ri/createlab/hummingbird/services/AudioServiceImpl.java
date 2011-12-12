@@ -99,4 +99,22 @@ final class AudioServiceImpl extends BaseAudioServiceImpl
          callback.handleException(e);
          }
       }
+
+   @Override
+   public byte[] getSpeech(final String whatToSay)
+      {
+      return hummingbird.getSpeech(whatToSay);
+      }
+
+   @Override
+   public void speak(final String whatToSay)
+      {
+      hummingbird.speak(whatToSay);
+      }
+
+   @Override
+   public boolean isSpeechSupported()
+      {
+      return true;
+      }
    }

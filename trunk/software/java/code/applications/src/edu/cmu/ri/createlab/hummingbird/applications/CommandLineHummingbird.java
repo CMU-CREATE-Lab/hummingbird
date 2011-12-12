@@ -28,7 +28,7 @@ import org.apache.log4j.Logger;
 /**
  * @author Chris Bartley (bartley@cmu.edu)
  */
-public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
+public final class CommandLineHummingbird extends SerialDeviceCommandLineApplication
    {
    private static final Logger LOG = Logger.getLogger(CommandLineHummingbird.class);
    private static final int THIRTY_SECONDS_IN_MILLIS = 30000;
@@ -538,6 +538,29 @@ public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
                         }
                      });
 
+      registerAction("k",
+                     new Runnable()
+                     {
+                     public void run()
+                        {
+                        if (isConnected())
+                           {
+                           final String whatToSay = readString("Text to speak: ");
+                           if (whatToSay == null || whatToSay.length() == 0)
+                              {
+                              println("Text to speak cannot be empty");
+                              return;
+                              }
+
+                           speak(whatToSay);
+                           }
+                        else
+                           {
+                           println("You must be connected to a hummingbird first.");
+                           }
+                        }
+                     });
+
       registerAction("z",
                      new Runnable()
                      {
@@ -621,6 +644,7 @@ public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
       println("f         Control a full-color LED");
       println("t         Play a tone");
       println("p         Play a sound clip");
+      println("k         Convert text to speech and then speak it");
       println("z         Display Hummingbird hardware and firmware info");
       println("w         Returns whether motor/servo power is enabled");
       println("");
@@ -630,6 +654,7 @@ public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
       println("--------------------------------------------");
       }
 
+   @SuppressWarnings({"BusyWait"})
    private void poll(final Runnable strategy)
       {
       final long startTime = System.currentTimeMillis();
@@ -661,7 +686,7 @@ public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
       return "";
       }
 
-   protected final boolean isConnected()
+   private boolean isConnected()
       {
       return hummingbird != null;
       }
@@ -676,57 +701,62 @@ public class CommandLineHummingbird extends SerialDeviceCommandLineApplication
          }
       }
 
-   protected Hummingbird.HummingbirdState getState()
+   private Hummingbird.HummingbirdState getState()
       {
       return ((HummingbirdService)serviceManager.getServiceByTypeId(HummingbirdService.TYPE_ID)).getHummingbirdState();
       }
 
-   protected int getAnalogInputValue(final int analogInputId)
+   private int getAnalogInputValue(final int analogInputId)
       {
       return ((AnalogInputsService)serviceManager.getServiceByTypeId(AnalogInputsService.TYPE_ID)).getAnalogInputValue(analogInputId);
       }
 
-   protected int[] getAnalogInputValues()
+   private int[] getAnalogInputValues()
       {
       return ((AnalogInputsService)serviceManager.getServiceByTypeId(AnalogInputsService.TYPE_ID)).getAnalogInputValues();
       }
 
-   protected void setMotorVelocity(final int motorId, final int velocity)
+   private void setMotorVelocity(final int motorId, final int velocity)
       {
       ((VelocityControllableMotorService)serviceManager.getServiceByTypeId(VelocityControllableMotorService.TYPE_ID)).setVelocity(motorId, velocity);
       }
 
-   protected void setVibrationMotorSpeed(final int motorId, final int speed)
+   private void setVibrationMotorSpeed(final int motorId, final int speed)
       {
       ((SpeedControllableMotorService)serviceManager.getServiceByTypeId(SpeedControllableMotorService.TYPE_ID)).setSpeed(motorId, speed);
       }
 
-   protected void setServoPosition(final int servoId, final int position)
+   private void setServoPosition(final int servoId, final int position)
       {
       ((SimpleServoService)serviceManager.getServiceByTypeId(SimpleServoService.TYPE_ID)).setPosition(servoId, position);
       }
 
-   protected void setLED(final int ledId, final int intensity)
+   private void setLED(final int ledId, final int intensity)
       {
       ((SimpleLEDService)serviceManager.getServiceByTypeId(SimpleLEDService.TYPE_ID)).set(ledId, intensity);
       }
 
-   protected void setFullColorLED(final int ledId, final int r, final int g, final int b)
+   private void setFullColorLED(final int ledId, final int r, final int g, final int b)
       {
       ((FullColorLEDService)serviceManager.getServiceByTypeId(FullColorLEDService.TYPE_ID)).set(ledId, new Color(r, g, b));
       }
 
-   protected void playTone(final int frequency, final int amplitude, final int duration)
+   private void playTone(final int frequency, final int amplitude, final int duration)
       {
       ((AudioService)serviceManager.getServiceByTypeId(AudioService.TYPE_ID)).playTone(frequency, amplitude, duration);
       }
 
-   protected void playClip(final byte[] data)
+   private void playClip(final byte[] data)
       {
       ((AudioService)serviceManager.getServiceByTypeId(AudioService.TYPE_ID)).playSound(data);
       }
 
-   protected void emergencyStop()
+   private void speak(final String whatToSay)
+      {
+      ((AudioService)serviceManager.getServiceByTypeId(AudioService.TYPE_ID)).speak(whatToSay);
+      }
+
+   private void emergencyStop()
       {
       ((HummingbirdService)serviceManager.getServiceByTypeId(HummingbirdService.TYPE_ID)).emergencyStop();
       }
