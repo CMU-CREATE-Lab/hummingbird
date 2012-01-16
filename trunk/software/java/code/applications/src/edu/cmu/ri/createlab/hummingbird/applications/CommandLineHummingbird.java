@@ -364,7 +364,9 @@ public final class CommandLineHummingbird extends SerialDeviceCommandLineApplica
                               {
                               final int minPosition = hummingbird.getHummingbirdProperties().getSimpleServoDeviceMinPosition();
                               final int maxPosition = hummingbird.getHummingbirdProperties().getSimpleServoDeviceMaxPosition();
-                              final Integer position = readInteger("Position [" + minPosition + " - " + maxPosition + "]: ");
+                              final int minSafePosition = hummingbird.getHummingbirdProperties().getSimpleServoDeviceMinSafePosition();
+                              final int maxSafePosition = hummingbird.getHummingbirdProperties().getSimpleServoDeviceMaxSafePosition();
+                              final Integer position = readInteger("Position [" + minPosition + " - " + maxPosition + "], safe range is [" + minSafePosition + " - " + maxSafePosition + "]: ");
                               if (position == null || position < minPosition || position > maxPosition)
                                  {
                                  println("Invalid position");

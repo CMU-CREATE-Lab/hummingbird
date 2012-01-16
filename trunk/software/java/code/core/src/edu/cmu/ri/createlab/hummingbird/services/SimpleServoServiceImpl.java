@@ -21,6 +21,8 @@ final class SimpleServoServiceImpl extends BaseSimpleServoServiceImpl
       basicPropertyManager.setReadOnlyProperty(TerkConstants.PropertyKeys.DEVICE_COUNT, hummingbirdProperties.getSimpleServoDeviceCount());
       basicPropertyManager.setReadOnlyProperty(SimpleServoService.PROPERTY_NAME_MIN_POSITION, hummingbirdProperties.getSimpleServoDeviceMinPosition());
       basicPropertyManager.setReadOnlyProperty(SimpleServoService.PROPERTY_NAME_MAX_POSITION, hummingbirdProperties.getSimpleServoDeviceMaxPosition());
+      basicPropertyManager.setReadOnlyProperty(SimpleServoService.PROPERTY_NAME_MIN_SAFE_POSITION, hummingbirdProperties.getSimpleServoDeviceMinSafePosition());
+      basicPropertyManager.setReadOnlyProperty(SimpleServoService.PROPERTY_NAME_MAX_SAFE_POSITION, hummingbirdProperties.getSimpleServoDeviceMaxSafePosition());
 
       return new SimpleServoServiceImpl(hummingbird,
                                         basicPropertyManager,
