@@ -72,7 +72,7 @@ abstract class BaseHummingbirdProperties implements HummingbirdProperties
    private static final int VIBRATION_MOTOR_DEVICE_MAX_SPEED = 255;
 
    /** The maximum supported safe speed */
-   private static final int VIBRATION_MOTOR_DEVICE_MAX_SAFE_SPEED = 100;
+   private static final int VIBRATION_MOTOR_DEVICE_MAX_SAFE_SPEED = 127;
 
    /** The number of servos */
    private static final int SIMPLE_SERVO_DEVICE_COUNT = 4;
@@ -82,6 +82,12 @@ abstract class BaseHummingbirdProperties implements HummingbirdProperties
 
    /** The maximum supported servo position */
    private static final int SIMPLE_SERVO_DEVICE_MAX_POSITION = 255;
+
+   /** The minimum supported servo position */
+   private static final int SIMPLE_SERVO_DEVICE_MIN_SAFE_POSITION = 0;
+
+   /** The maximum supported servo position */
+   private static final int SIMPLE_SERVO_DEVICE_MAX_SAFE_POSITION = 219;
 
    @Override
    public final int getHummingbirdDeviceCount()
@@ -237,5 +243,17 @@ abstract class BaseHummingbirdProperties implements HummingbirdProperties
    public final int getSimpleServoDeviceMaxPosition()
       {
       return SIMPLE_SERVO_DEVICE_MAX_POSITION;
+      }
+
+   @Override
+   public int getSimpleServoDeviceMinSafePosition()
+      {
+      return SIMPLE_SERVO_DEVICE_MIN_SAFE_POSITION;
+      }
+
+   @Override
+   public int getSimpleServoDeviceMaxSafePosition()
+      {
+      return SIMPLE_SERVO_DEVICE_MAX_SAFE_POSITION;
       }
    }

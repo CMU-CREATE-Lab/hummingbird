@@ -89,5 +89,11 @@ public interface HummingbirdProperties
 
    /** Returns the maximum supported servo position */
    int getSimpleServoDeviceMaxPosition();
+
+   /** Returns the minimum supported safe servo position */
+   int getSimpleServoDeviceMinSafePosition();
+
+   /** Returns the maximum supported safe servo position */
+   int getSimpleServoDeviceMaxSafePosition();
    }
 
