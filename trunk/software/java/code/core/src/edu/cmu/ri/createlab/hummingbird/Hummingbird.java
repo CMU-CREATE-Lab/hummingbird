@@ -21,7 +21,7 @@ public interface Hummingbird extends CreateLabDeviceProxy
    HummingbirdState getState();
 
    /**
-    * Returns the value of the given port id; returns <code>-1</code> if an error occurred while trying to read the value.
+    * Returns the value of the given port id; returns <code>null</code> if an error occurred while trying to read the value.
     *
     */
    Integer getAnalogInputValue(int analogInputPortId);
