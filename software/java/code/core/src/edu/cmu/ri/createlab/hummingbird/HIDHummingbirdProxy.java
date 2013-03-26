@@ -31,7 +31,6 @@ import edu.cmu.ri.createlab.usb.hid.HIDDeviceNoReturnValueCommandExecutor;
 import edu.cmu.ri.createlab.usb.hid.HIDDeviceNotFoundException;
 import edu.cmu.ri.createlab.usb.hid.HIDDeviceReturnValueCommandExecutor;
 import edu.cmu.ri.createlab.util.commandexecution.CommandResponse;
-import org.apache.commons.lang.NotImplementedException;
 import org.apache.log4j.Logger;
 
 /**
@@ -69,17 +68,17 @@ final class HIDHummingbirdProxy extends BaseHummingbirdProxy
          if (commandQueue != null)
             {
             // create the HIDHummingbirdProxy
-            final HIDHummingbirdProxy finchController = new HIDHummingbirdProxy(commandQueue, hidDevice);
+            final HIDHummingbirdProxy proxy = new HIDHummingbirdProxy(commandQueue, hidDevice);
 
             // call the emergency stop command immediately, to make sure the LED and motors are turned off.
-            finchController.emergencyStop();
+            proxy.emergencyStop();
 
-            return finchController;
+            return proxy;
             }
          }
-      catch (NotImplementedException e)
+      catch (UnsupportedOperationException e)
          {
-         LOG.error("NotImplementedException caught while trying to create the HIDCommandExecutionQueue", e);
+         LOG.error("UnsupportedOperationException caught while trying to create the HIDCommandExecutionQueue", e);
          System.exit(1);
          }
       catch (HIDConnectionException e)
