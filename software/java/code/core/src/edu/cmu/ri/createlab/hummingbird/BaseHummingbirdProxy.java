@@ -182,6 +182,7 @@ abstract class BaseHummingbirdProxy implements Hummingbird, CommandExecutionFail
          catch (Exception e)
             {
             LOG.error("BaseHummingbirdProxy$Pinger.run(): Exception caught while executing the pinger", e);
+            forceFailure();
             }
          }
 
