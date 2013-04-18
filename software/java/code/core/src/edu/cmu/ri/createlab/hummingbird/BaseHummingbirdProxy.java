@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 import edu.cmu.ri.createlab.audio.AudioHelper;
 import edu.cmu.ri.createlab.device.CreateLabDevicePingFailureEventListener;
 import edu.cmu.ri.createlab.speech.Mouth;
+import edu.cmu.ri.createlab.usb.hid.HIDDeviceNotConnectedException;
 import edu.cmu.ri.createlab.util.commandexecution.CommandExecutionFailureHandler;
 import edu.cmu.ri.createlab.util.commandexecution.CommandResponse;
 import edu.cmu.ri.createlab.util.thread.DaemonThreadFactory;
@@ -179,10 +180,14 @@ abstract class BaseHummingbirdProxy implements Hummingbird, CommandExecutionFail
                handlePingFailure();
                }
             }
+         catch (HIDDeviceNotConnectedException e)
+            {
+            LOG.error("BaseHummingbirdProxy$Pinger.run(): HIDDeviceNotConnectedException caught while executing the pinger", e);
+            handlePingFailure();
+            }
          catch (Exception e)
             {
             LOG.error("BaseHummingbirdProxy$Pinger.run(): Exception caught while executing the pinger", e);
-            forceFailure();
             }
          }
 
