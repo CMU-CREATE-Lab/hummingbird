@@ -65,16 +65,14 @@ final class HIDHummingbirdProxy extends BaseHummingbirdProxy
 
          // create the HID device command execution queue (which will attempt to connect to the device)
          final HIDCommandExecutionQueue commandQueue = new HIDCommandExecutionQueue(hidDevice);
-         if (commandQueue != null)
-            {
-            // create the HIDHummingbirdProxy
-            final HIDHummingbirdProxy proxy = new HIDHummingbirdProxy(commandQueue, hidDevice);
 
-            // call the emergency stop command immediately, to make sure the LED and motors are turned off.
-            proxy.emergencyStop();
+         // create the HIDHummingbirdProxy
+         final HIDHummingbirdProxy proxy = new HIDHummingbirdProxy(commandQueue, hidDevice);
 
-            return proxy;
-            }
+         // call the emergency stop command immediately, to make sure the LED and motors are turned off.
+         proxy.emergencyStop();
+
+         return proxy;
          }
       catch (UnsupportedOperationException e)
          {
