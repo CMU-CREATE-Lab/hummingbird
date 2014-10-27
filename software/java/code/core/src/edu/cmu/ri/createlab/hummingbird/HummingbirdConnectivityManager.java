@@ -11,6 +11,12 @@ import org.apache.log4j.Logger;
 final class HummingbirdConnectivityManager extends BaseCreateLabDeviceConnectivityManager<Hummingbird>
    {
    private static final Logger LOG = Logger.getLogger(HummingbirdConnectivityManager.class);
+   private final boolean willCheckSerialPorts;
+
+   HummingbirdConnectivityManager(final boolean willCheckSerialPorts)
+      {
+      this.willCheckSerialPorts = willCheckSerialPorts;
+      }
 
    @Override
    protected Hummingbird scanForDeviceAndCreateProxy()
@@ -20,8 +26,8 @@ final class HummingbirdConnectivityManager extends BaseCreateLabDeviceConnectivi
       // first try to connect to an HID hummingbird...
       Hummingbird hummingbird = HummingbirdFactory.createHidHummingbird();
 
-      // if HIDHummingbirdProxy returned null, then it couldn't find an HID hummingbird, so try serial...
-      if (hummingbird == null)
+      // if we're checking serial ports, and if HIDHummingbirdProxy returned null, then it couldn't find an HID hummingbird, so try serial...
+      if (willCheckSerialPorts && hummingbird == null)
          {
          // If the user specified one or more serial ports, then just start trying to connect to it/them.  Otherwise,
          // check each available serial port for the target serial device, and connect to the first one found.  This
