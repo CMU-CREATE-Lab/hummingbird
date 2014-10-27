@@ -23,6 +23,34 @@ public class HummingbirdFactory
 
    /**
     * Creates the {@link Hummingbird} by repeatedly attempting to connect to one as a USB HID device or, if that fails,
+    * and the given <code>willCheckSerialPorts</code> is <code>true</code>, by also checking all available serial ports
+    * and connecting to the first Hummingbird it finds.  This method will repeatedly retry and will only return when
+    * either a connection is established, or an unrecoverable failure is encountered in which case <code>null</code> is
+    * returned.
+    */
+   public static Hummingbird create(final boolean willCheckSerialPorts)
+      {
+      if (willCheckSerialPorts)
+         {
+         return create();
+         }
+      else
+         {
+         try
+            {
+            LOG.debug("Connecting to the Hummingbird (not checking serial ports)...");
+            return new HummingbirdConnectivityManager(false).connect();
+            }
+         catch (ConnectionException e)
+            {
+            LOG.error("ConnectionException while trying to connect to the Hummingbird", e);
+            }
+         }
+      return null;
+      }
+
+   /**
+    * Creates the {@link Hummingbird} by repeatedly attempting to connect to one as a USB HID device or, if that fails,
     * by checking all available serial ports and connecting to the first Hummingbird it finds.  This method will
     * repeatedly retry and will only return when either a connection is established, or an unrecoverable failure is
     * encountered in which case <code>null</code> is returned.
@@ -83,8 +111,8 @@ public class HummingbirdFactory
 
       try
          {
-         LOG.debug("Connecting to the Hummingbird...");
-         return new HummingbirdConnectivityManager().connect();
+         LOG.debug("Connecting to the Hummingbird (checking both USB and serial ports)...");
+         return new HummingbirdConnectivityManager(true).connect();
          }
       catch (ConnectionException e)
          {

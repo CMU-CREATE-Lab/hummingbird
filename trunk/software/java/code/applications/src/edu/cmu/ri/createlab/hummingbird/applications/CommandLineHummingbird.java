@@ -79,32 +79,42 @@ public final class CommandLineHummingbird extends SerialDeviceCommandLineApplica
             }
          };
 
-   private final Runnable scanAndConnectToDeviceAction =
-         new Runnable()
+   private final class ScanAndConnectRunnable implements Runnable
+      {
+      private final boolean willCheckSerialPorts;
+
+      private ScanAndConnectRunnable(final boolean willCheckSerialPorts)
          {
-         public void run()
+         this.willCheckSerialPorts = willCheckSerialPorts;
+         }
+
+      @Override
+      public void run()
+         {
+         if (isConnected())
             {
-            if (isConnected())
+            println("You are already connected to a Hummingbird.");
+            }
+         else
+            {
+            println(willCheckSerialPorts ? "Scanning USB and serial ports for a hummingbird..." : "Scanning USB ports for a hummingbird...");
+            hummingbird = HummingbirdFactory.create(willCheckSerialPorts);
+            if (hummingbird == null)
                {
-               println("You are already connected to a Hummingbird.");
+               println("Connection failed.");
                }
             else
                {
-               println("Scanning for a hummingbird...");
-               hummingbird = HummingbirdFactory.create();
-               if (hummingbird == null)
-                  {
-                  println("Connection failed.");
-                  }
-               else
-                  {
-                  hummingbird.addCreateLabDevicePingFailureEventListener(pingFailureEventListener);
-                  serviceManager = new HummingbirdServiceManager(hummingbird, hummingbirdServiceFactoryHelper);
-                  println("Connection successful!");
-                  }
+               hummingbird.addCreateLabDevicePingFailureEventListener(pingFailureEventListener);
+               serviceManager = new HummingbirdServiceManager(hummingbird, hummingbirdServiceFactoryHelper);
+               println("Connection successful!");
                }
             }
-         };
+         }
+      }
+
+   private final Runnable scanAndConnectToDeviceAction = new ScanAndConnectRunnable(true);
+   private final Runnable scanUsbAndConnectToDeviceAction = new ScanAndConnectRunnable(false);
 
    private final Runnable connectToSerialDeviceAction =
          new Runnable()
@@ -206,6 +216,7 @@ public final class CommandLineHummingbird extends SerialDeviceCommandLineApplica
       {
       registerAction("?", enumeratePortsAction);
       registerAction("C", scanAndConnectToDeviceAction);
+      registerAction("U", scanUsbAndConnectToDeviceAction);
       registerAction("c", connectToSerialDeviceAction);
       registerAction("u", connectToHIDDeviceAction);
       registerAction("d", disconnectFromDeviceAction);
@@ -631,7 +642,8 @@ public final class CommandLineHummingbird extends SerialDeviceCommandLineApplica
       println("");
       println("?         List all available serial ports");
       println("");
-      println("C         Scan all USB and serial ports and connect to the first hummingbird found");
+      println("C         Repeatedly scan all USB and serial ports until a connection to a hummingbird is established");
+      println("U         Repeatedly scan only USB ports until a connection to a hummingbird is established");
       println("c         Connect to a serial hummingbird on the given serial port");
       println("u         Connect to a USB HID hummingbird");
       println("d         Disconnect from the hummingbird");
