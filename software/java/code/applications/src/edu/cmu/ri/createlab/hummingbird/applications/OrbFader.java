@@ -68,6 +68,15 @@ public class OrbFader
 
          // set the color
          setFullColorLEDs(hummingbird, currentColor);
+
+         try
+            {
+            Thread.sleep(10);
+            }
+         catch (InterruptedException e)
+            {
+            System.err.println("InterruptedException while sleeping");
+            }
          }
 
       hummingbird.disconnect();
