@@ -53,12 +53,6 @@ final class AnalogInputsServiceImpl extends BaseAnalogInputsServiceImpl
    @Override
    public int[] getAnalogInputValues()
       {
-      final Hummingbird.HummingbirdState hummingbirdState = hummingbird.getState();
-      if (hummingbirdState != null)
-         {
-         return hummingbirdState.getAnalogInputValues();
-         }
-
-      return null;
+      return hummingbird.getAnalogInputValues();
       }
    }

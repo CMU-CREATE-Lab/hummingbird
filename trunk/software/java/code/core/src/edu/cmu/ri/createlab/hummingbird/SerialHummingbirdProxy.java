@@ -176,6 +176,17 @@ final class SerialHummingbirdProxy extends BaseHummingbirdProxy
       }
 
    @Override
+   public int[] getAnalogInputValues()
+      {
+      final HummingbirdState state = hummingbirdStateReturnValueCommandExecutor.execute(getStateCommandStrategy);
+      if (state != null)
+         {
+         return state.getAnalogInputValues();
+         }
+      return null;
+      }
+
+   @Override
    public boolean isMotorPowerEnabled()
       {
       return true; // always true for serial hummingbirds

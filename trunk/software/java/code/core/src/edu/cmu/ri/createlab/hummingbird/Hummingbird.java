@@ -26,6 +26,13 @@ public interface Hummingbird extends CreateLabDeviceProxy
     */
    Integer getAnalogInputValue(int analogInputPortId);
 
+   /**
+    * Returns the values of all analog inputs in an array; returns <code>null</code> if an error occurred while trying
+    * to read the values.
+    *
+    */
+   int[] getAnalogInputValues();
+
    /** Returns <code>true</code> if motor power is enabled; <code>false</code> otherwise. */
    boolean isMotorPowerEnabled();
 
