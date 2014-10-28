@@ -12,7 +12,8 @@ import org.apache.log4j.Logger;
 public enum HummingbirdHardwareType
    {
       SERIAL("Serial"),
-      HID("HID");
+      HID("HID"),
+      DUO("DUO");
 
    private static final Logger LOG = Logger.getLogger(HummingbirdHardwareType.class);
 

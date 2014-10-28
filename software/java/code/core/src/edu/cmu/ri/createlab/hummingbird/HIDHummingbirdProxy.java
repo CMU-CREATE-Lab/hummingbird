@@ -53,12 +53,12 @@ final class HIDHummingbirdProxy extends BaseHummingbirdProxy
          if (LOG.isDebugEnabled())
             {
             LOG.debug("HIDHummingbirdProxy.create(): creating HID device for vendor ID [" +
-                      HIDHummingbirdProperties.UsbHidConfiguration.HUMMINGBIRD_HID_DEVICE_DESCRIPTOR.getVendorIdAsHexString() +
+                      HIDConfiguration.HUMMINGBIRD_HID_DEVICE_DESCRIPTOR.getVendorIdAsHexString() +
                       "] and product ID [" +
-                      HIDHummingbirdProperties.UsbHidConfiguration.HUMMINGBIRD_HID_DEVICE_DESCRIPTOR.getProductIdAsHexString() +
+                      HIDConfiguration.HUMMINGBIRD_HID_DEVICE_DESCRIPTOR.getProductIdAsHexString() +
                       "]");
             }
-         final HIDDevice hidDevice = HIDDeviceFactory.create(HIDHummingbirdProperties.UsbHidConfiguration.HUMMINGBIRD_HID_DEVICE_DESCRIPTOR);
+         final HIDDevice hidDevice = HIDDeviceFactory.create(HIDConfiguration.HUMMINGBIRD_HID_DEVICE_DESCRIPTOR);
 
          LOG.debug("HIDHummingbirdProxy.create(): attempting connection...");
          hidDevice.connectExclusively();
@@ -90,17 +90,17 @@ final class HIDHummingbirdProxy extends BaseHummingbirdProxy
       return null;
       }
 
-   private final HummingbirdProperties hummingbirdProperties = HIDHummingbirdProperties.getInstance();
+   private final HummingbirdProperties hummingbirdProperties;
 
    private final HIDCommandExecutionQueue commandQueue;
    private final HIDDevice hidDevice;
 
    private final CreateLabHIDCommandStrategy disconnectCommandStrategy = new DisconnectCommandStrategy();
    private final Map<Integer, GetAnalogInputCommandStrategy> analogInputCommandStategyMap = new HashMap<Integer, GetAnalogInputCommandStrategy>();
-   private final GetState0CommandStrategy getState0CommandStrategy = new GetState0CommandStrategy(hummingbirdProperties);
-   private final GetState1CommandStrategy getState1CommandStrategy = new GetState1CommandStrategy(hummingbirdProperties);
-   private final GetState2CommandStrategy getState2CommandStrategy = new GetState2CommandStrategy(hummingbirdProperties);
-   private final GetState3CommandStrategy getState3CommandStrategy = new GetState3CommandStrategy(hummingbirdProperties);
+   private final GetState0CommandStrategy getState0CommandStrategy;
+   private final GetState1CommandStrategy getState1CommandStrategy;
+   private final GetState2CommandStrategy getState2CommandStrategy;
+   private final GetState3CommandStrategy getState3CommandStrategy;
    private final EmergencyStopCommandStrategy emergencyStopCommandStrategy = new EmergencyStopCommandStrategy();
 
    private final HIDDeviceNoReturnValueCommandExecutor noReturnValueCommandExecutor;
@@ -128,11 +128,21 @@ final class HIDHummingbirdProxy extends BaseHummingbirdProxy
       // get the hardware and firmware version numbers
       final HIDDeviceReturnValueCommandExecutor<HummingbirdState4> hummingbirdState4ReturnValueCommandExecutor = new HIDDeviceReturnValueCommandExecutor<HummingbirdState4>(commandQueue, this);
       final HummingbirdState4 hummingbirdState4 = hummingbirdState4ReturnValueCommandExecutor.execute(new GetState4CommandStrategy());
+
+      // We'll figure out exactly what kind of hardware this is below.  Start by defaulting to HID Hummingbird.
+      HummingbirdProperties hummingbirdPropertiesTemp = HIDHummingbirdProperties.getInstance();
+
       if (hummingbirdState4 != null)
          {
          if (hummingbirdState4.getHardwareVersion() != null)
             {
+            // check version number to determine whether this is an HID Hummingbird or a Hummingbird Duo
             hardwareVersionNumber = hummingbirdState4.getHardwareVersion();
+            final HummingbirdHardwareType hardwareType = BaseHIDHummingbirdProperties.getHardwareTypeFromHardwareVersion(hardwareVersionNumber);
+            if (HummingbirdHardwareType.DUO.equals(hardwareType))
+               {
+               hummingbirdPropertiesTemp = HummingbirdDuoProperties.getInstance();
+               }
             }
          else
             {
@@ -152,6 +162,13 @@ final class HIDHummingbirdProxy extends BaseHummingbirdProxy
          hardwareVersionNumber = DEFAULT_HUMMINGBIRD_VERSION_NUMBER;
          firmwareVersionNumber = DEFAULT_HUMMINGBIRD_VERSION_NUMBER;
          }
+
+      hummingbirdProperties = hummingbirdPropertiesTemp;
+
+      getState0CommandStrategy = new GetState0CommandStrategy(hummingbirdProperties);
+      getState1CommandStrategy = new GetState1CommandStrategy(hummingbirdProperties);
+      getState2CommandStrategy = new GetState2CommandStrategy(hummingbirdProperties);
+      getState3CommandStrategy = new GetState3CommandStrategy(hummingbirdProperties);
 
       // initialize the analog input command strategy map
       for (int i = 0; i < hummingbirdProperties.getAnalogInputDeviceCount(); i++)
