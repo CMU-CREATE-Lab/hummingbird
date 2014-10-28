@@ -178,7 +178,7 @@ final class SerialHummingbirdProxy extends BaseHummingbirdProxy
    @Override
    public int[] getAnalogInputValues()
       {
-      final HummingbirdState state = hummingbirdStateReturnValueCommandExecutor.execute(getStateCommandStrategy);
+      final HummingbirdState state = getState();
       if (state != null)
          {
          return state.getAnalogInputValues();
