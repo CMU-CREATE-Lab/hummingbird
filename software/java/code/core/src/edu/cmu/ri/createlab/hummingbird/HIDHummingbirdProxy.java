@@ -239,6 +239,17 @@ final class HIDHummingbirdProxy extends BaseHummingbirdProxy
       }
 
    @Override
+   public int[] getAnalogInputValues()
+      {
+      final HummingbirdState3 state = hummingbirdState3ReturnValueCommandExecutor.execute(getState3CommandStrategy);
+      if (state != null)
+         {
+         return state.getAnalogInputValues();
+         }
+      return null;
+      }
+
+   @Override
    public boolean isMotorPowerEnabled()
       {
       final HummingbirdState3 state3 = hummingbirdState3ReturnValueCommandExecutor.execute(getState3CommandStrategy);
