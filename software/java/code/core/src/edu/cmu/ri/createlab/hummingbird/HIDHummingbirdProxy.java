@@ -40,6 +40,7 @@ final class HIDHummingbirdProxy extends BaseHummingbirdProxy
    {
    private static final Logger LOG = Logger.getLogger(HIDHummingbirdProxy.class);
    private static final HummingbirdVersionNumber DEFAULT_HUMMINGBIRD_VERSION_NUMBER = new HummingbirdVersionNumber(0, 0);
+   private static final int DELAY_IN_MILLISECONDS_BETWEEN_PEER_PINGS = 400;
 
    /**
     * Tries to create a <code>Hummingbird</code> by connecting to a USB HID hummingbird.  Returns <code>null</code> if
@@ -115,6 +116,8 @@ final class HIDHummingbirdProxy extends BaseHummingbirdProxy
 
    private HIDHummingbirdProxy(final HIDCommandExecutionQueue commandQueue, final HIDDevice hidDevice)
       {
+      super(DELAY_IN_MILLISECONDS_BETWEEN_PEER_PINGS);
+
       this.commandQueue = commandQueue;
       this.hidDevice = hidDevice;
 
