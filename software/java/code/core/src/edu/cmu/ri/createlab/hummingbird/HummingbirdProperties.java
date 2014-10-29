@@ -60,6 +60,9 @@ public interface HummingbirdProperties
    /** Returns the maximum supported full-color LED intensity */
    int getFullColorLedDeviceMaxIntensity();
 
+   /** Returns the voltage detected on the motor power port */
+   double getMaxMotorPowerPortVoltage();
+
    /** Returns the number of motors */
    int getMotorDeviceCount();
 

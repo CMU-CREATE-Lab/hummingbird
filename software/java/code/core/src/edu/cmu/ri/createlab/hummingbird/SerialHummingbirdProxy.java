@@ -193,6 +193,12 @@ final class SerialHummingbirdProxy extends BaseHummingbirdProxy
       }
 
    @Override
+   public Double getMotorPowerPortVoltage()
+      {
+      return hummingbirdProperties.getMaxMotorPowerPortVoltage(); // always return the max for serial hummingbirds
+      }
+
+   @Override
    public boolean setMotorVelocity(final int motorId, final int velocity)
       {
       return noReturnValueCommandExecutor.execute(new MotorCommandStrategy(motorId, velocity, hummingbirdProperties));

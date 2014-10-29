@@ -608,7 +608,8 @@ public final class CommandLineHummingbird extends SerialDeviceCommandLineApplica
                         {
                         if (isConnected())
                            {
-                           println("Motor/Servo power enabled: " + hummingbird.isMotorPowerEnabled());
+                           println("Motor/Servo power enabled:      " + hummingbird.isMotorPowerEnabled());
+                           println("Motor/Servo power port voltage: " + hummingbird.getMotorPowerPortVoltage());
                            }
                         else
                            {
@@ -660,7 +661,7 @@ public final class CommandLineHummingbird extends SerialDeviceCommandLineApplica
       println("p         Play a sound clip");
       println("k         Convert text to speech and then speak it");
       println("z         Display Hummingbird hardware and firmware info");
-      println("w         Returns whether motor/servo power is enabled");
+      println("w         Returns whether motor/servo power is enabled, and the voltage detected");
       println("");
       println("x         Turn all motors and LEDs off");
       println("q         Quit");

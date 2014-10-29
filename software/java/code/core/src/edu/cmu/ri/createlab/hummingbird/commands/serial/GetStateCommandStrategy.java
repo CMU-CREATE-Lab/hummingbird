@@ -93,9 +93,12 @@ public final class GetStateCommandStrategy extends CreateLabSerialDeviceReturnVa
       private final int[] motors;
       private final int[] vibeMotors;
       private final int[] analogInputs;
+      private final HummingbirdProperties hummingbirdProperties;
 
       private HummingbirdStateImpl(final byte[] state, final HummingbirdProperties hummingbirdProperties)
          {
+         this.hummingbirdProperties = hummingbirdProperties;
+
          // read state positions 0-2 for the first full-color LED
          orbs = new Orb[hummingbirdProperties.getFullColorLedDeviceCount()];
          this.orbs[0] = new Orb(ByteUtils.unsignedByteToInt(state[0]),
@@ -195,6 +198,12 @@ public final class GetStateCommandStrategy extends CreateLabSerialDeviceReturnVa
          }
 
       @Override
+      public double getMotorPowerPortVoltage()
+         {
+         return hummingbirdProperties.getMaxMotorPowerPortVoltage();
+         }
+
+      @Override
       public boolean equals(final Object o)
          {
          if (this == o)
@@ -277,7 +286,8 @@ public final class GetStateCommandStrategy extends CreateLabSerialDeviceReturnVa
             {
             s.append("   Sensor ").append(i).append(":     ").append(analogInputs[i]).append(EOL);
             }
-         s.append("   Motor Power Enabled: ").append(IS_MOTOR_POWER_ENABLED).append(EOL);
+         s.append("   Motor Power Enabled: ").append(isMotorPowerEnabled()).append(EOL);
+         s.append("   Motor Power Port Voltage: ").append(getMotorPowerPortVoltage()).append(EOL);
 
          return s.toString();
          }

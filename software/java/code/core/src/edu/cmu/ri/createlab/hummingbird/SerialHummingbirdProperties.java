@@ -19,6 +19,9 @@ final class SerialHummingbirdProperties extends BaseHummingbirdProperties
 
    private static final int ANALOG_INPUT_DEVICE_COUNT = 2;
 
+   /** Max voltage for the motor power port */
+   private static final double MAX_MOTOR_POWER_PORT_VOLTAGE = 5.0;
+
    static final HummingbirdVersionNumber HARDWARE_VERSION = new HummingbirdVersionNumber(1, 0);
    static final HummingbirdVersionNumber FIRMWARE_VERSION = new HummingbirdVersionNumber(1, 0);
 
@@ -63,5 +66,10 @@ final class SerialHummingbirdProperties extends BaseHummingbirdProperties
    public int getAnalogInputDeviceCount()
       {
       return ANALOG_INPUT_DEVICE_COUNT;
+      }
+
+   public double getMaxMotorPowerPortVoltage()
+      {
+      return MAX_MOTOR_POWER_PORT_VOLTAGE;
       }
    }
