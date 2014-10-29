@@ -222,7 +222,7 @@ abstract class BaseHummingbirdProperties implements HummingbirdProperties
       }
 
    @Override
-   public final int getVibrationMotorDeviceMaxSafeSpeed()
+   public int getVibrationMotorDeviceMaxSafeSpeed()
       {
       return VIBRATION_MOTOR_DEVICE_MAX_SAFE_SPEED;
       }
@@ -246,13 +246,13 @@ abstract class BaseHummingbirdProperties implements HummingbirdProperties
       }
 
    @Override
-   public int getSimpleServoDeviceMinSafePosition()
+   public final int getSimpleServoDeviceMinSafePosition()
       {
       return SIMPLE_SERVO_DEVICE_MIN_SAFE_POSITION;
       }
 
    @Override
-   public int getSimpleServoDeviceMaxSafePosition()
+   public final int getSimpleServoDeviceMaxSafePosition()
       {
       return SIMPLE_SERVO_DEVICE_MAX_SAFE_POSITION;
       }
