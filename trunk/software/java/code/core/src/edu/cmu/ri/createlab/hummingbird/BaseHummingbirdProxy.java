@@ -22,7 +22,7 @@ abstract class BaseHummingbirdProxy implements Hummingbird, CommandExecutionFail
    {
    private static final Logger LOG = Logger.getLogger(BaseHummingbirdProxy.class);
 
-   private static final int DELAY_IN_SECONDS_BETWEEN_PEER_PINGS = 2;
+   private static final int DELAY_IN_MILLISECONDS_BETWEEN_PEER_PINGS = 2000;  // 2 seconds
 
    private final Pinger pinger = new Pinger();
    private final ScheduledExecutorService pingExecutorService = Executors.newSingleThreadScheduledExecutor(new DaemonThreadFactory("BaseHummingbirdProxy.pingExecutorService"));
@@ -31,11 +31,16 @@ abstract class BaseHummingbirdProxy implements Hummingbird, CommandExecutionFail
 
    BaseHummingbirdProxy()
       {
+      this(DELAY_IN_MILLISECONDS_BETWEEN_PEER_PINGS);
+      }
+
+   BaseHummingbirdProxy(final int delayInMillisecondsBetweenPeerPings)
+      {
       // schedule periodic pings
       pingScheduledFuture = pingExecutorService.scheduleAtFixedRate(pinger,
-                                                                    DELAY_IN_SECONDS_BETWEEN_PEER_PINGS, // delay before first ping
-                                                                    DELAY_IN_SECONDS_BETWEEN_PEER_PINGS, // delay between pings
-                                                                    TimeUnit.SECONDS);
+                                                                    delayInMillisecondsBetweenPeerPings, // delay before first ping
+                                                                    delayInMillisecondsBetweenPeerPings, // delay between pings
+                                                                    TimeUnit.MILLISECONDS);
       }
 
    @Override
