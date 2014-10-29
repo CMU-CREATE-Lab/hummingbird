@@ -1,6 +1,7 @@
 package edu.cmu.ri.createlab.hummingbird.commands.hid;
 
 import java.util.Arrays;
+import edu.cmu.ri.createlab.hummingbird.HummingbirdHardwareType;
 import edu.cmu.ri.createlab.hummingbird.HummingbirdProperties;
 import edu.cmu.ri.createlab.usb.hid.CreateLabHIDReturnValueCommandStrategy;
 import edu.cmu.ri.createlab.usb.hid.HIDCommandResponse;
@@ -17,6 +18,8 @@ public final class GetState3CommandStrategy extends CreateLabHIDReturnValueComma
 
    /** The size of the expected response, in bytes */
    public static final int SIZE_IN_BYTES_OF_EXPECTED_RESPONSE = 5;
+
+   private static final double MOTOR_POWER_THRESHOLD = 2.0;
 
    private final byte[] command = new byte[]{COMMAND_PREFIX_1, COMMAND_PREFIX_2};
 
@@ -72,6 +75,7 @@ public final class GetState3CommandStrategy extends CreateLabHIDReturnValueComma
 
       private final int[] analogInputs;
       private final boolean isMotorPowerEnabled;
+      private final double motorPowerPortVoltage;
 
       private HummingbirdState3Impl(final byte[] state, final HummingbirdProperties hummingbirdProperties)
          {
@@ -82,16 +86,19 @@ public final class GetState3CommandStrategy extends CreateLabHIDReturnValueComma
             this.analogInputs[i] = ByteUtils.unsignedByteToInt(state[i]);
             }
 
-         // read state of motor power
-         isMotorPowerEnabled = ByteUtils.unsignedByteToInt(state[4]) == 1;
-         }
-
-      private int computeMotorVelocity(final int direction, final int speed)
-         {
-         // convention is that a direction of 0 means negative, 1 means positive
-         final int sign = (direction == 0) ? -1 : 1;
-
-         return sign * speed;
+         final int rawValue = ByteUtils.unsignedByteToInt(state[4]);
+         if (hummingbirdProperties.getHardwareType().equals(HummingbirdHardwareType.DUO))
+            {
+            // read state of motor power
+            motorPowerPortVoltage = (rawValue / 255.0) * hummingbirdProperties.getMaxMotorPowerPortVoltage();
+            isMotorPowerEnabled = motorPowerPortVoltage >= MOTOR_POWER_THRESHOLD;
+            }
+         else
+            {
+            // read state of motor power
+            isMotorPowerEnabled = rawValue == 1;
+            motorPowerPortVoltage = isMotorPowerEnabled ? hummingbirdProperties.getMaxMotorPowerPortVoltage() : 0;
+            }
          }
 
       @Override
@@ -104,6 +111,12 @@ public final class GetState3CommandStrategy extends CreateLabHIDReturnValueComma
       public boolean isMotorPowerEnabled()
          {
          return isMotorPowerEnabled;
+         }
+
+      @Override
+      public double getMotorPowerPortVoltage()
+         {
+         return motorPowerPortVoltage;
          }
 
       @Override
@@ -124,6 +137,10 @@ public final class GetState3CommandStrategy extends CreateLabHIDReturnValueComma
             {
             return false;
             }
+         if (Double.compare(that.motorPowerPortVoltage, motorPowerPortVoltage) != 0)
+            {
+            return false;
+            }
          if (!Arrays.equals(analogInputs, that.analogInputs))
             {
             return false;
@@ -135,8 +152,12 @@ public final class GetState3CommandStrategy extends CreateLabHIDReturnValueComma
       @Override
       public int hashCode()
          {
-         int result = analogInputs != null ? Arrays.hashCode(analogInputs) : 0;
+         int result;
+         long temp;
+         result = Arrays.hashCode(analogInputs);
          result = 31 * result + (isMotorPowerEnabled ? 1 : 0);
+         temp = Double.doubleToLongBits(motorPowerPortVoltage);
+         result = 31 * result + (int)(temp ^ (temp >>> 32));
          return result;
          }
 
@@ -149,6 +170,7 @@ public final class GetState3CommandStrategy extends CreateLabHIDReturnValueComma
             s.append("   Sensor ").append(i).append(":     ").append(analogInputs[i]).append(EOL);
             }
          s.append("   Motor Power Enabled: ").append(isMotorPowerEnabled).append(EOL);
+         s.append("   Motor Power Port Voltage: ").append(motorPowerPortVoltage).append(EOL);
 
          return s.toString();
          }

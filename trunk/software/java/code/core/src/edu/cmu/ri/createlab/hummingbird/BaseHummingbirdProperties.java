@@ -186,6 +186,9 @@ abstract class BaseHummingbirdProperties implements HummingbirdProperties
       }
 
    @Override
+   public abstract double getMaxMotorPowerPortVoltage();
+
+   @Override
    public final int getMotorDeviceCount()
       {
       return MOTOR_DEVICE_COUNT;

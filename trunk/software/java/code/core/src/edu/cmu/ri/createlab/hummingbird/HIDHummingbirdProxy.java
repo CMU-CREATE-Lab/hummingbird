@@ -260,6 +260,13 @@ final class HIDHummingbirdProxy extends BaseHummingbirdProxy
       }
 
    @Override
+   public Double getMotorPowerPortVoltage()
+      {
+      final HummingbirdState3 state3 = hummingbirdState3ReturnValueCommandExecutor.execute(getState3CommandStrategy);
+      return (state3 == null) ? null : state3.getMotorPowerPortVoltage();
+      }
+
+   @Override
    public boolean setMotorVelocity(final int motorId, final int velocity)
       {
       return noReturnValueCommandExecutor.execute(new MotorCommandStrategy(motorId, velocity, hummingbirdProperties));
@@ -531,6 +538,12 @@ final class HIDHummingbirdProxy extends BaseHummingbirdProxy
          }
 
       @Override
+      public double getMotorPowerPortVoltage()
+         {
+         return state3.getMotorPowerPortVoltage();
+         }
+
+      @Override
       public boolean equals(final Object o)
          {
          if (this == o)
@@ -609,6 +622,7 @@ final class HIDHummingbirdProxy extends BaseHummingbirdProxy
             s.append("   Sensor ").append(i).append(":     ").append(analogInputs[i]).append(EOL);
             }
          s.append("   Motor Power Enabled: ").append(isMotorPowerEnabled()).append(EOL);
+         s.append("   Motor Power Port Voltage: ").append(getMotorPowerPortVoltage()).append(EOL);
 
          return s.toString();
          }

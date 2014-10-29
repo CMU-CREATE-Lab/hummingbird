@@ -37,6 +37,13 @@ public interface Hummingbird extends CreateLabDeviceProxy
    boolean isMotorPowerEnabled();
 
    /**
+    * Returns the voltage detected on the motor power port.  For serial Hummingbirds, this will always be 5V.  For the
+    * older HID Hummingbird, this will be 5V if power is being supplied, 0V otherwise.  For the Hummingbird Duo, this
+    * will report the actual analog voltage detected.
+    */
+   Double getMotorPowerPortVoltage();
+
+   /**
     * Sets the motor specified by the given <code>motorId</code> to the given (signed) <code>velocity</code>.  Returns
     * <code>true</code> if the command succeeded, <code>false</code> otherwise.
     *
@@ -159,5 +166,7 @@ public interface Hummingbird extends CreateLabDeviceProxy
       int[] getAnalogInputValues();
 
       boolean isMotorPowerEnabled();
+
+      double getMotorPowerPortVoltage();
       }
    }
