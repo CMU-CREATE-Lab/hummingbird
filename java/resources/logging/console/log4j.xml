@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+
+   <!-- Define appenders -->
+   <appender name="ConsoleAppender" class="org.apache.log4j.ConsoleAppender">
+      <layout class="org.apache.log4j.PatternLayout">
+         <param name="ConversionPattern" value="%d{HH:mm:ss,SSS} [%t] %-5p: %m%n"/>
+      </layout>
+   </appender>
+
+   <!-- These are useful for debugging USB communication
+   <logger name="edu.cmu.ri.createlab.usb.hid.CreateLabHIDCommandStrategy">
+      <level value="trace"/>
+   </logger>
+   <logger name="edu.cmu.ri.createlab.usb.hid.hidapi.BaseHIDAPIDevice">
+      <level value="trace"/>
+   </logger>
+   -->
+
+   <root>
+      <priority value="debug"/>
+      <appender-ref ref="ConsoleAppender"/>
+   </root>
+
+</log4j:configuration>
